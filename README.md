@@ -6,6 +6,12 @@
 
 https://nodejs.org/en/download
 
+### Installera Nodemon
+
+```bash
+npm install -g nodemon
+```
+
 ### Installera projektet
 
 ```bash
@@ -18,15 +24,14 @@ npm install
 
 Vanlig start
 
-```bash
+````bash
 npm start
-```
 
 Starta med automatisk omstart vid ändringar
 
 ```bash
 npm run dev
-```
+````
 
 ## Verktyg och tekniker som används i projektet
 
