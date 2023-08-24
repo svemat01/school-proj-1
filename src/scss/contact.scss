@@ -1,0 +1,56 @@
+@use "base";
+
+#contact {
+    // height: 100%;
+    // width: 100%;
+    max-width: base.$common-width;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: center;
+    gap: base.$common-gap;
+
+    margin-inline: auto;
+
+    .contact-form {
+        width: 60%;
+        height: 100%;
+        border-radius: base.$border-radius;
+        padding: base.$common-padding;
+        display: flex;
+        flex-direction: column;
+        gap: base.$common-gap;
+        background-color: base.$dark-blue;
+
+        div {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: base.$common-gap;
+            input {
+                width: 100%;
+            }
+        }
+
+        textarea {
+            width: 100%;
+        }
+
+        button {
+            align-self: flex-end;
+        }
+    }
+
+    .info {
+        width: 40%;
+        height: 100%;
+        border-radius: base.$border-radius;
+        padding: base.$common-padding;
+        background-color: base.$light-blue;
+
+        .inner {
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

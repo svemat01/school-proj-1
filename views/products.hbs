@@ -1,0 +1,21 @@
+<img class="bg" src="/deepwatah.jpg" alt="bg">
+<div class="bg-overlay"></div>
+<div class="search">
+    <p> search </p>
+</div>
+<div class="flex">
+    <div class="category">
+        <p>Porple</p>
+    </div>
+    <div class="products">
+        {{#each products}}
+        <div class="product">
+            <h2>{{this.name}}</h2>
+            <a href="/products/{{this.name}}"><img src="{{this.image}}" alt="{{this.name}}"></a>
+            <p>{{this.description}}</p>
+            <p>{{this.price}}</p>
+            <a href="/products/{{this.name}}">Läs mer</a>
+        </div>
+        {{/each}}
+    </div>
+</div>
