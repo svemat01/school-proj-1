@@ -3,23 +3,27 @@
 ## Installation
 
 ### Installera Node.js
+
 https://nodejs.org/en/download
 
 ### Installera projektet
+
 ```bash
-git clone https://www.github.com/YEET/YEET
-cd YEET
+git clone https://github.com/svemat01/school-proj-1.git
+cd school-proj-1
 npm install
 ```
 
 ### Starta projektet
 
 Vanlig start
+
 ```bash
 npm start
 ```
 
 Starta med automatisk omstart vid ändringar
+
 ```bash
 npm run dev
 ```
@@ -52,9 +56,10 @@ Med detta kan vi konfiugera views (HTML-sidor) och partials (templates) som kan 
 Webbservern drivs av nodejs som kör en express applikation. Denna applikationen har en router som tar emot inkommande requests och skickar tillbaka en response. Denna response kan vara en HTML-sida, en JSON-fil eller något annat. Detta beror på vilken route som användaren har anropat.
 
 Grundläggande så har vi tre viktiga platser i projektet. Dessa är:
-* public
-* src
-* views
+
+- public
+- src
+- views
 
 ### public
 
@@ -68,6 +73,6 @@ I src så finns alla filer som används för att skapa backenden. Detta är till
 
 Här så finns templates i formatet handlebars. Dessa templates används för att skapa HTML-sidor som sedan skickas tillbaka till användaren.
 
-Under views/partials har vi delar sidan som kan inkluderas av de stora templatesen. Dessa partials kan till exempel vara en header eller en footer. 
+Under views/partials har vi delar sidan som kan inkluderas av de stora templatesen. Dessa partials kan till exempel vara en header eller en footer.
 
 I views/layouts så har vi i vanliga fall endast en fil som heter main.handlebars. Denna filen är en mall för alla sidor som används i projektet (endast de som ligger under views). Det vill säga att här så ska saker som ska finnas på alla sidor ligga. Detta kan till exempel vara en header, en footer eller fonter/scripts som ska finnas på alla sidor.
