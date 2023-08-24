@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "scss": "sass --watch src/scss:public/styles"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "@types/node": "^20.5.3",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
+    "sass": "^1.66.1",
     "typescript": "^5.1.6"
   }
 }
