@@ -1,0 +1,6 @@
+@use 'base';
+@use 'tw';
+
+body {
+    color: tw.$green-500;
+}
