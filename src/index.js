@@ -37,7 +37,7 @@ const products = [
         name: "Banan",
         price: 10,
         description: "En gul böjig frukt",
-        image: "https://cdn.pixabay.com/photo/2023/08/05/23/40/bird-8171927_1280.jpg",
+        image: "safari.jpeg",
     },
     // generate 5 more ☝️🤓
     {
@@ -56,7 +56,7 @@ const products = [
         name: "Päron",
         price: 8,
         description: "En grön frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+        image: "scuba.jpeg",
     },
     {
         name: "Kiwi",
@@ -74,7 +74,7 @@ const products = [
         name: "Citron",
         price: 2,
         description: "En gul frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+        image: "reality.jpeg",
     },
     {
         name: "Avocado",
@@ -92,7 +92,7 @@ const products = [
         name: "Squash",
         price: 200,
         description: "En smashy frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+        image: "alchemy.jpeg",
     },
     {
         name: "Grape",

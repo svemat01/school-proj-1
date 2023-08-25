@@ -32,6 +32,7 @@
     }
 
     .content {
+        gap: 20px;
         width: calc(100% - 100px);
         max-width: 600px;
 
@@ -42,6 +43,8 @@
     }
 
     .logo {
+        @include base.custom-box-shadow;
+
         padding: 40px 60px;
         border-radius: base.$border-radius;
 
@@ -67,11 +70,13 @@
 
     .cta-button {
         // width: 100%;
+        font-family: "Magra", sans-serif;
+        @include base.custom-box-shadow;
+
         padding: 10px 100px;
         border-radius: base.$border-radius;
 
         background-color: base.$lighter-blue;
-        margin-top: 20px;
     }
 
     .desc {
@@ -79,7 +84,6 @@
         border-radius: base.$border-radius;
 
         // background-color: base.$dark-blue;
-        margin-top: 20px;
         text-align: center;
         font-size: 20px;
     }

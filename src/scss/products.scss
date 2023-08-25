@@ -86,10 +86,10 @@ main{
         background: base.$dark-blue;
         box-shadow: base.$box-shadow;
         
-        @media (max-width: 1064px) {
+        @media (max-width: 744px) {
             grid-template-columns: repeat(2,1fr);
         }
-        @media (max-width: 486px) {
+        @media (max-width: 521px) {
             grid-template-columns: repeat(1,1fr);
         }
         
@@ -97,7 +97,7 @@ main{
         .product{
             border: 5px solid base.$navy-blue;
             background: base.$light-blue;
-            max-height: 300px;
+            max-height: 350px;
 
             transition: transform 0.1s ease-in-out;
             &:hover{
@@ -107,11 +107,6 @@ main{
             
             img{
                 max-width: 100%;
-                //width: 250px;
-                //height: 250px;
-                //object-fit: cover;
-                //object-position: center center;
-                //overflow: hidden;
             }
     
             h2{

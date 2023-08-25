@@ -27,8 +27,8 @@ $button-padding: 2vh 2vw;
 
 $custom-transition-time: 0.2s;
 
-$desktop-width: 1px; // CHANGE THIS
-$tablet-width: 1px; // CHANGE THIS
+$desktop-width: 1100px; // CHANGE THIS
+$tablet-width: 768px; // CHANGE THIS
 $mobile-width: 1px; // CHANGE THIS
 
 @mixin custom-box-shadow {
@@ -91,7 +91,7 @@ img {
 nav#navbar {
     background-color: $navy-blue;
     width: 100%;
-    height: $navbar-height;
+    // height: $navbar-height;
 
     .inner {
         max-width: $common-width;
@@ -101,6 +101,7 @@ nav#navbar {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
 
         div {
             display: flex;
@@ -121,7 +122,17 @@ nav#navbar {
         padding: 15px 0;
         color: $lighter-blue;
         svg {
-            height: 100%;
+            height: 50px;
+        }
+    }
+
+    @media screen and (max-width: $tablet-width) {
+        .inner {
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+
+            padding-bottom: 10px;
         }
     }
 }
@@ -144,13 +155,16 @@ footer#footer {
         flex-direction: column;
         gap: $common-gap;
 
-        div {
+        .logo {
+            width: min-content;
+        }
+
+        .content {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
 
             div {
-
                 width: 40%;
                 display: flex;
                 flex-direction: column;
@@ -232,6 +246,15 @@ footer#footer {
                             transition: $custom-transition-time;
                         }
                     }
+                }
+            }
+
+            @media screen and (max-width: $tablet-width) {
+                flex-direction: column;
+                gap: $common-gap;
+
+                div {
+                    width: 100%;
                 }
             }
         }
