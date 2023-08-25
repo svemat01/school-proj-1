@@ -2,42 +2,76 @@
 
 .cart {
     display: flex;
-    justify-content: center;
-    .cart-div {
-        width: 80%;
-        height: 600px;
-        background: #18435a;
-        margin-top: 100px;
-        padding-top: 60px;
-        border-radius: 10px;
-        .cart-text-border {
-            background: #2a628f;
-            height: auto;
-            width: 80px;
-            margin-bottom: 50px;
-            margin-inline: 100px;
+    flex-direction: column;
+    margin-inline: auto;
+
+    max-width: base.$common-width;
+    width: 100%;
+
+    background: base.$dark-blue;
+    margin-top: 100px;
+    padding-top: 60px;
+    border-radius: base.$border-radius;
+
+    box-shadow: base.$box-shadow;
+
+    .cart-text-border {
+        background: base.$light-blue;
+        height: auto;
+        width: 80px;
+        margin-bottom: 50px;
+        margin-inline: 100px;
+        display: flex;
+        justify-content: center;
+        border-radius: 5px;
+
+        .cart-h1 {
+            color: #aacfe3;
+        }
+    }
+
+    .cart-flex {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 50px;
+        padding: 0 50px;
+        
+
+        .items-in-cart {
+            // margin-inline: 50px;
             display: flex;
-            justify-content: center;
-            border-radius: 5px;
-            .cart-h1 {
-                color: #aacfe3;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            
+
+            .cart-item {
+                background: base.$light-blue;
+                border-radius: base.$border-radius;
+                padding: 10px;
+
+                display: flex;
+                gap: 15px;
+                box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.6);
+
+
+                img {
+                    width: 200px;
+                    border-radius: base.$border-radius;
+                }
+
             }
         }
-        .cart-flex {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            .items-in-cart {
-                height: auto;
-                margin-inline: 50px;
-            }
-            .info-div {
-                width: 70%;
-                margin-inline: 30px;
-                height: 500px;
-                border-radius: 10px;
-                background: #2a628f;
-                margin-right: 10%;
-            }
+
+        .info-div {
+            // width: 70%;
+            // margin-inline: 30px;
+            height: 500px;
+            border-radius: 10px;
+            background: base.$light-blue;
+            // margin-right: 10%;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.6);
         }
     }
 }

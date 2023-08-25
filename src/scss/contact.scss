@@ -1,56 +1,110 @@
 @use "base";
 
 #contact {
-    // height: 100%;
+    flex: 1;
     // width: 100%;
-    max-width: base.$common-width;
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-    justify-content: center;
-    gap: base.$common-gap;
+    height: 90dvh;
+    padding: 5dvh 0;
+    width: 100%;
 
-    margin-inline: auto;
-
-    .contact-form {
-        width: 60%;
+    .inner {
+        max-width: base.$common-width;
         height: 100%;
-        border-radius: base.$border-radius;
-        padding: base.$common-padding;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
         gap: base.$common-gap;
-        background-color: base.$dark-blue;
+        margin-inline: auto;
+        .contact-form {
+            @include base.custom-box-shadow;
+            width: 65%;
+            height: 100%;
 
-        div {
-            width: 100%;
+            border-radius: base.$border-radius;
+            padding: base.$common-padding;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             gap: base.$common-gap;
-            input {
+            background-color: base.$dark-blue;
+
+            div {
                 width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: base.$common-gap;
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0;
+
+                    p {
+                font-family: 'Magra', sans-serif;
+
+                    }
+
+                    input {
+                        border-radius: base.$border-radius;
+                        padding: base.$common-padding-small;
+                        width: 100%;
+                        ::-webkit-input-placeholder,
+                        :-moz-placeholder,
+                        ::-moz-placeholder,
+                        :-ms-input-placeholder,
+                        ::-ms-input-placeholder,
+                        ::placeholder {
+                            color: base.$text-color-light;
+                        }
+                        color: base.$text-color-2;
+                    }
+                }
+            }
+
+            div.textbox-container {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+
+                p {
+                    font-family: 'Magra', sans-serif;
+
+                }
+
+                textarea {
+                    border-radius: base.$border-radius;
+                    padding: base.$common-padding-small;
+                    flex: 1;
+                    width: 100%;
+
+                    &:focus {
+                    outline: 1px solid base.$text-color-2;
+
+                    }
+                }
+            }
+
+            button {
+                align-self: flex-end;
+                &:hover {
+                    cursor: pointer;
+                }
             }
         }
 
-        textarea {
-            width: 100%;
-        }
-
-        button {
-            align-self: flex-end;
-        }
-    }
-
-    .info {
-        width: 40%;
-        height: 100%;
-        border-radius: base.$border-radius;
-        padding: base.$common-padding;
-        background-color: base.$light-blue;
-
-        .inner {
+        .info {
+            box-shadow: base.$box-shadow;
             height: 100%;
-            width: 100%;
+            flex: 1;
+            border-radius: base.$border-radius;
+            padding: base.$common-padding;
+            background-color: base.$light-blue;
+
+                h2 {
+                    font-family: 'Magra', sans-serif !important;
+                    font-size: 35px;
+                }
+                
         }
     }
 }

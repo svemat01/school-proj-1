@@ -1,15 +1,26 @@
 <div class="cart">
-    <div class="cart-div">
-        <div class="cart-text-border">
-            <h1 class="cart-h1">Cart</h1>
+    {{! <div class="cart-div"> }}
+    <div class="cart-text-border">
+        <h1 class="cart-h1">Cart</h1>
+    </div>
+    <div class="cart-flex">
+        <div class="items-in-cart">
+            {{#each products}}
+
+                <a href="/products/{{this.name}}" class="cart-item">
+                        <img src="{{this.image}}" />
+                        <div class="content">
+                            <h2>{{this.name}}</h2>
+                            <p>{{this.description}}</p>
+                            <p>{{this.price}} kr</p>
+                        </div>
+                </a>
+            {{/each}}
         </div>
-        <div class="cart-flex">
-            <div class="items-in-cart">
-
-            </div>
-            <div class="info-div">
-
-            </div>
+        <div class="info-div">
+            <h2>Price:</h2>
+            {{total}}
         </div>
     </div>
+    {{! </div> }}
 </div>

@@ -3,12 +3,13 @@
 
 .intro {
     position: relative;
-    height: 90dvh;
+    // height: 90dvh;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
+    padding: 150px 0;
 
     .bg {
         position: absolute;
@@ -44,7 +45,8 @@
         border-radius: base.$border-radius;
 
         background-color: base.$light-blue;
-        margin-bottom: 60px;
+        
+        color: base.$navy-blue;
     }
 
     .cta-button {
@@ -53,7 +55,7 @@
         border-radius: base.$border-radius;
 
         background-color: base.$lighter-blue;
-        margin-bottom: 20px;
+        margin-top: 20px;
     }
 
     .desc {
@@ -61,6 +63,7 @@
         border-radius: base.$border-radius;
 
         background-color: base.$dark-blue;
+        margin-top: 20px;
     }
 }
 

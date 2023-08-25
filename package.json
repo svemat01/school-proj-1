@@ -20,5 +20,8 @@
     "express-handlebars": "^7.1.2",
     "sass": "^1.66.1",
     "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "node-sass": "^9.0.0"
   }
 }

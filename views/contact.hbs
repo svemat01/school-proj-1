@@ -1,20 +1,35 @@
 <div id="contact">
-    {{!-- <div class="inner"> --}}
+    <div class="inner">
         <div class="contact-form">
            <div>
-                <input type="text" id="name" name="name" placeholder="John Dough" required/>
-                <input type="tel" id="phone" name="phone" placeholder="043 1234 234" required/>
+               <div>
+                   <p>Name</p>
+                    <input type="text" id="name" name="name" placeholder="John Dough" required/>
+               </div>
+                <div>
+                    <p>Phone</p>
+                    <input type="tel" id="phone" name="phone" placeholder="043 1234 234" required/>
+                </div>
             </div>
             <div>
-                <input type="text" id="email" name="email" placeholder="john.dough@domain.com" required/>
-                <input type="text" id="subject" name="subject" placeholder="Urgent" required/>
+                <div>
+                    <p>Email</p>
+                    <input type="text" id="email" name="email" placeholder="john.dough@domain.com" required/>
+                </div>
+                <div>
+                    <p>Subject</p>
+                    <input type="text" id="subject" name="subject" placeholder="Urgent" required/>
+                </div>
             </div>
-            <textarea name="message" placeholder="Message" required>
-            </textarea>
+            <div class="textbox-container">
+                <p>Message</p>
+                <textarea name="message" placeholder="Message" required></textarea>
+            </div>          
             <button>Send</button>
         </div>
         <div class="info">
-        
+            <h2>Want to get in contact?</h2>
+            <p>Looking to report a bug, ask a question or just want to chat? Hit us up with an email, don't be shy!</p>
         </div>
-    {{!-- </div> --}}
+    </div>
 </div>

@@ -42,7 +42,7 @@ const products = [
     // generate 5 more ☝️🤓
     {
         name: "Äpple",
-        price: 5,
+        price: 15,
         description: "En röd frukt",
         image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
     },
@@ -88,6 +88,24 @@ const products = [
         description: "En tropisk frukt",
         image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
     },
+    {
+        name: "Squash",
+        price: 200,
+        description: "En smashy frukt",
+        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+    },
+    {
+        name: "Grape",
+        price: 20,
+        description: "En grupp frukt",
+        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+    },
+    {
+        name: "Blueberry",
+        price: 15,
+        description: "En blå frukt",
+        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+    },
 ]
 
 app.get("/", (req, res) => {
@@ -104,7 +122,10 @@ app.get("/products", (req, res) => {
 });
 
 app.get("/cart", (req, res) => {
-    res.render("cart", {});
+    res.render("cart", {
+        products,
+        total: products.reduce((acc, curr) => acc + curr.price, 0)
+    });
 });
 
 app.get("/contact", (req, res) => {
@@ -119,3 +140,5 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
     // hbs.getTemplates(path.resolve(__dirname, "../views")).then(console.log).catch(console.error);
 });
+
+console.log("Hello world");
