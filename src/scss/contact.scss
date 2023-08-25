@@ -56,6 +56,12 @@
                             color: base.$text-color-light;
                         }
                         color: base.$text-color-2;
+                        border: none;
+
+
+                        &:focus {
+                            outline: 2px solid base.$text-color-2;
+                        }
                     }
                 }
             }
@@ -68,7 +74,6 @@
 
                 p {
                     font-family: 'Magra', sans-serif;
-
                 }
 
                 textarea {
@@ -76,24 +81,38 @@
                     padding: base.$common-padding-small;
                     flex: 1;
                     width: 100%;
+                    border: none;
 
                     &:focus {
-                    outline: 1px solid base.$text-color-2;
-
+                        outline: 2px solid base.$text-color-2;
                     }
                 }
             }
 
             button {
+                @include base.custom-box-shadow;
+                padding: base.$button-padding;
+                
+
                 align-self: flex-end;
+                font-size: 20px;
+                font-family: 'Magra', sans-serif;
+                font-weight: 700;
+                background-color: base.$lighter-blue;
+                color: base.$text-color;
+                border: none;
+                transition: base.$custom-transition-time;
+
                 &:hover {
                     cursor: pointer;
+                    background-color: base.$navy-blue;
+                    transition: base.$custom-transition-time;
                 }
             }
         }
 
         .info {
-            box-shadow: base.$box-shadow;
+            @include base.custom-box-shadow;
             height: 100%;
             flex: 1;
             border-radius: base.$border-radius;

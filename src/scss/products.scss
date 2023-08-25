@@ -8,37 +8,50 @@ main{
 .bg {
     position: absolute;
     inset: 0;
-    object-fit: cover;
-    height: 100%;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     z-index: -1;
 }
 
 .bg-overlay {
     position: absolute;
     inset: 0;
-    object-fit: cover;
+    object-fit: cover; 
     width: 100%;
     height: 100%;
     z-index: -1;
-    background-color: #13293dcc;
-    backdrop-filter: blur(1px);
+    background-color: #13293d4d;
+    backdrop-filter: blur(10px);
 }
 
 .search{
-    background:#2A628F;
+    background: base.$light-blue;
     border-radius: base.$border-radius;
     width: 750px;
     margin-inline: auto;
     margin-top: 50px;
     padding: 10px;
+    box-shadow: base.$box-shadow;
 
     .searchfield{
-        background-color: #18435A;
-        border-radius: base.$border-radius;
-        text-indent: 10px;
-        width: 200px;
-        padding: 2px;
+       // background-color: base.$lighter-blue;
+       // border-radius: base.$border-radius;
+       // width: 200px;
+
+        input{
+            background-color: base.$lighter-blue;
+            border-radius: base.$border-radius;
+            border: 2px solid base.$navy-blue;
+            width: 200px;
+            height: 25px;
+            text-indent: 10px;
+            color: base.$text-color;
+
+            &::placeholder{
+                color: base.$text-color;
+            }
+        }
     }
 }
 
@@ -53,7 +66,8 @@ main{
         max-height: 793px;
         margin-top: 50px;
         padding: base.$common-padding;
-        background: #18435A;
+        background: base.$dark-blue;
+        box-shadow: base.$box-shadow;
     }
     
     .products {
@@ -63,13 +77,16 @@ main{
     
         display: grid;
         grid-template-columns: repeat(3,1fr);
+
         width: 100%;
         max-width: base.$common-width;
         padding: 10px;
+        margin-bottom: 10px;
     
-        background:#18435A;
+        background: base.$dark-blue;
+        box-shadow: base.$box-shadow;
         
-        @media (max-width: 768px) {
+        @media (max-width: 1064px) {
             grid-template-columns: repeat(2,1fr);
         }
         @media (max-width: 486px) {
@@ -79,10 +96,22 @@ main{
         
         .product{
             border: 5px solid base.$navy-blue;
-            background:#3e92cc;
+            background: base.$light-blue;
+            max-height: 300px;
+
+            transition: transform 0.1s ease-in-out;
+            &:hover{
+                transform: scale(1.1);
+                border-color: aliceblue;
+            }   
             
             img{
-               max-width: 100%;
+                max-width: 100%;
+                //width: 250px;
+                //height: 250px;
+                //object-fit: cover;
+                //object-position: center center;
+                //overflow: hidden;
             }
     
             h2{

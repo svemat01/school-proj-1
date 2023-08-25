@@ -37,7 +37,7 @@ const products = [
         name: "Banan",
         price: 10,
         description: "En gul böjig frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
+        image: "https://cdn.pixabay.com/photo/2023/08/05/23/40/bird-8171927_1280.jpg",
     },
     // generate 5 more ☝️🤓
     {

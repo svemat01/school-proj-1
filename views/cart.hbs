@@ -8,19 +8,36 @@
             {{#each products}}
 
                 <a href="/products/{{this.name}}" class="cart-item">
-                        <img src="{{this.image}}" />
-                        <div class="content">
-                            <h2>{{this.name}}</h2>
-                            <p>{{this.description}}</p>
-                            <p>{{this.price}} kr</p>
-                        </div>
+                    <img src="{{this.image}}" />
+                    <div class="content">
+                        <h2>{{this.name}}</h2>
+                        <p>{{this.description}}</p>
+                        <p>{{this.price}} kr</p>
+                    </div>
                 </a>
             {{/each}}
+
         </div>
-        <div class="info-div">
-            <h2>Price:</h2>
-            {{total}}
+        <div>
+            <div class="info-div">
+                <h2>Price:</h2>
+                {{#each products}}
+                    <p>{{this.name}}: {{this.price}} kr</p>
+                {{/each}}
+                <br />
+                <p>Total: {{total}} kr</p>
+            </div>
+            <div class="check-out">
+
+                <p>By checking out you agree to our User agreement and TOS.</p>
+                <input type="checkbox" class="check">
+
+            </div>
+            <div class="check-out-button">
+                <a href="#" onclick="function alert("Checked Out")">Check Out</a>
+            </div>
         </div>
     </div>
     {{! </div> }}
+
 </div>
