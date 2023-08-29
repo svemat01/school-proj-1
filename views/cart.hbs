@@ -1,5 +1,7 @@
 <div class="cart">
-    {{! <div class="cart-div"> }}
+    {{!
+    <div class="cart-div">
+        }}
     <div class="cart-text-border">
         <h1 class="cart-h1">Cart</h1>
     </div>
@@ -7,37 +9,72 @@
         <div class="items-in-cart">
             {{#each products}}
 
-                <a href="/products/{{this.name}}" class="cart-item">
-                    <img src="{{this.image}}" />
+                <div class="cart-item">
+                    <!-- href="/products/{{this.name}}" ??????? -->
+                    <img src="{{this.image}}" draggable="false" />
                     <div class="content">
-                        <h2>{{this.name}}</h2>
-                        <p>{{this.description}}</p>
-                        <p>{{this.price}} kr</p>
-                    </div>
-                </a>
-            {{/each}}
+                        <div>
+                            <h2>{{this.name}}</h2>
+                            <p>{{this.description}}</p>
 
+                            <div class="remove">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="1.5em"
+                                    viewBox="0 0 448 512"
+                                >
+                                    <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                    <path
+                                        d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
+                                    />
+                                </svg>
+                                <p>Remove</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3>{{this.price}} ₽</h3>
+                            <p>Count</p>
+
+                            <!-- NOTE: Replace with actual value as well as max with current inventory -->
+                            <input value="1" min="1" max="20" type="number" />
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
         </div>
         <div>
             <div class="info-div">
-                <h2>Price:</h2>
-                {{#each products}}
-                    <p>{{this.name}}: {{this.price}} kr</p>
-                {{/each}}
-                <br />
-                <p>Total: {{total}} kr</p>
-            </div>
-            <div class="check-out">
-
-                <p>By checking out you agree to our User agreement and TOS.</p>
-                <input type="checkbox" class="check">
-
-            </div>
-            <div class="check-out-button">
-                <a href="#">Check Out</a>
+                <div>
+                    <h4>Sub-total:</h4>
+                    <p>{{total}} ₽</p>
+                </div>
+                <div class="delivery">
+                    <h3>Delivery</h3>
+                    <select id="delivery" name="delivery">
+                        <option value="email" selected>
+                            Email (default)
+                        </option>
+                        <option value="fax">Fax</option>
+                        <option value="flaskpost">
+                            Flaskpost (most common choice)
+                        </option>
+                        <option value="pgp">PGP</option>
+                        <option value="letter">Physical Mail</option>
+                    </select>
+                </div>
+                <div class="check-out">
+                    <p class="tos-agreement">
+                        By checking out you agree to our User agreement and TOS.
+                    </p>
+                    <input type="checkbox" class="check" />
+                </div>
+                <div class="check-out-button">
+                    <a href="#">Check Out</a>
+                </div>
             </div>
         </div>
     </div>
-    {{! </div> }}
-
+    {{!
+    </div>
+    }}
 </div>

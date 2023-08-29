@@ -1,0 +1,47 @@
+{{#if successful}}{{else}}
+    <form
+        class="main"
+        hx-post={{inlineIfElse register "/register" "/login"}}
+        hx-swap="outerHTML"
+    >
+        <div class="content">
+            <label for="username">Username</label>
+            <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="ClownFish"
+                value="{{username}}"
+            />
+        </div>
+        <div class="content">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="CoralLover123"
+                value="{{password}}"
+            />
+        </div>
+
+        {{#if error}}
+            <p class="error">{{error}}</p>
+        {{/if}}
+
+        {{#if register}}
+            <a href="/login">Already have an account?</a>
+        {{else}}
+            <a href="/register">Don't have an account?</a>
+        {{/if}}
+        <div class="content">
+            <button type="submit">
+                {{#if register}}
+                    Register
+                {{else}}
+                    Login
+                {{/if}}
+            </button>
+        </div>
+    </form>
+{{/if}}

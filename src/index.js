@@ -2,6 +2,10 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { create, engine } from "express-handlebars";
+import { router } from "./routes/index.js";
+import cookieParser from "cookie-parser";
+import { setupDB } from "./database.js";
+import { urlencoded } from "express";
 
 // =======================
 // Konfigurera express webbservern ☝️🤓
@@ -17,6 +21,10 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const hbs = create({
     extname: ".hbs",
+    helpers: {
+        'inlineIf': (condition, value) => condition ? value : '',
+        'inlineIfElse': (condition, value, elseValue) => condition ? value : elseValue,
+    }
 });
 
 // Säger till express att använda handlebars som template engine ☝️🤓
@@ -25,6 +33,14 @@ app.set("view engine", "hbs");
 // Säger till express att använda views-mappen för att hitta template filer ☝️🤓
 app.set("views", path.resolve(__dirname, "../views"));
 
+app.use(cookieParser("very secret"));
+
+app.use(
+    urlencoded({
+        extended: true,
+    })
+);
+
 // =======================
 // Konfigurera routes ☝️🤓
 // =======================
@@ -32,109 +48,13 @@ app.set("views", path.resolve(__dirname, "../views"));
 // Säger till express att använda public-mappen för att serva statiska filer ☝️🤓
 app.use(express.static(path.join(__dirname, "../public")));
 
-const products = [
-    {
-        name: "Banan",
-        price: 10,
-        description: "En gul böjig frukt",
-        image: "safari.jpeg",
-    },
-    // generate 5 more ☝️🤓
-    {
-        name: "Äpple",
-        price: 15,
-        description: "En röd frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Apelsin",
-        price: 7,
-        description: "En orange frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Päron",
-        price: 8,
-        description: "En grön frukt",
-        image: "scuba.jpeg",
-    },
-    {
-        name: "Kiwi",
-        price: 9,
-        description: "En brun frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Vattenmelon",
-        price: 15,
-        description: "En stor frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Citron",
-        price: 2,
-        description: "En gul frukt",
-        image: "reality.jpeg",
-    },
-    {
-        name: "Avocado",
-        price: 20,
-        description: "En fet frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Ananas",
-        price: 15,
-        description: "En tropisk frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Squash",
-        price: 200,
-        description: "En smashy frukt",
-        image: "alchemy.jpeg",
-    },
-    {
-        name: "Grape",
-        price: 20,
-        description: "En grupp frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-    {
-        name: "Blueberry",
-        price: 15,
-        description: "En blå frukt",
-        image: "https://cdn.pixabay.com/photo/2016/03/05/19/02/bananas-1238247_960_720.jpg",
-    },
-]
-
-app.get("/", (req, res) => {
-
-    res.render("home", {
-    });
-});
-
-
-app.get("/products", (req, res) => {
-    res.render("products", {
-        products
-    });
-});
-
-app.get("/cart", (req, res) => {
-    res.render("cart", {
-        products,
-        total: products.reduce((acc, curr) => acc + curr.price, 0)
-    });
-});
-
-app.get("/contact", (req, res) => {
-    res.render("contact", {});
-});
+// Använd router from ./routes/index.js
+app.use(router);
 
 // =======================
 // Starta servern ☝️🤓
 // =======================
+setupDB();
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

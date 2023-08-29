@@ -2,28 +2,37 @@
 <div class="bg-overlay"></div>
 <div class="search">
     <div class="searchfield">
-        <input placeholder="Search"></input>
+        <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+        <input placeholder="Search" type="text">
+        </input>
+        <select id="sort" name="sort">
+            <option value="" selected disabled hidden>Sort by</option>
+            <option value="price-htl">Price (High to Low)</option>
+            <option value="price-lth">Price (Low to High)</option>
+            <option value="quantity">Quantity</option>
+        </select>
     </div>
 </div>
 <div class="flex">
-    <div class="category">
-        <p>Porple</p>
-    </div>
+    <!--<div class="category">
+        
+    </div>-->
     <div class="products">
         {{#each products}}
-        <div class="product">
-            <a href="/products/{{this.name}}"><img src="{{this.image}}" alt="{{this.name}}"></a>
-            <div class="info">
+        <a class="product" href="/products/{{this.name}}">
+            <img src="{{this.image}}" alt="{{this.name}}" draggable="false">
+            <div class="info" style="background: {{this.image}}">
                 <div class="title">
                     <h2>{{this.name}}</h2>
                 </div>
                 <!--<p>{{this.description}}</p> -->
                 <div class="price">
-                   <p>Doge<br>{{this.price}}</br></p>
+                   <p>{{this.price}} ₽</p>
                 </div>
-                <!--<a href="/products/{{this.name}}">Läs mer</a> -->
+                <!-- <a href="/products/{{this.name}}">More</a> -->
+                <button>Add to cart</button>
             </div>
-        </div>
+        </a>
         {{/each}}
     </div>
 </div>

@@ -5,38 +5,36 @@
     flex-direction: column;
     margin-inline: auto;
 
-    max-width: base.$common-width;
-    width: 100%;
+    max-width: base.$common-max-width;
+    height: 100%;
 
-    background: base.$dark-blue;
-    margin-top: 100px;
     padding-top: 60px;
-    border-radius: base.$border-radius;
-
-    @include base.custom-box-shadow;
+    padding-bottom: 100px;
 
     .cart-text-border {
         height: auto;
-        width: 80px;
-        margin-bottom: 50px;
-        margin-inline: 100px;
-        display: flex;
-        justify-content: center;
+        width: 100%;
+        margin-bottom: 25px;
+
         border-radius: 5px;
 
         .cart-h1 {
+            font-family: "Magra", sans-serif;
+            font-size: 34px;
+            text-align: left;
             color: base.$lighter-blue;
         }
     }
 
     .cart-flex {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 50px;
-        padding: 0 50px;
+        width: 100%;
 
         .items-in-cart {
             // margin-inline: 50px;
+            grid-column: span 4;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -49,11 +47,61 @@
 
                 display: flex;
                 gap: 15px;
-                box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
+                @include base.custom-box-shadow;
+
+                div.content {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: start;
+                    justify-content: space-between;
+
+                    div {
+                        display: flex;
+                        flex-direction: column;
+                        gap: base.$common-padding-small;
+
+                        h2 {
+                            font-family: "Magra", sans-serif;
+                            font-size: 28px;
+                        }
+
+                        h3 {
+                            font-family: "Magra", sans-serif;
+                            font-size: 20px;
+                        }
+
+                        div.remove {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 5px;
+
+                            svg {
+                                path {
+                                    fill: base.$text-color;
+                                }
+                            }
+
+                            &:hover {
+                                cursor: pointer;
+                                color: rgb(179, 0, 0);
+
+                                svg {
+                                    path {
+                                        fill: rgb(179, 0, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 img {
                     width: 200px;
+                    height: 200px;
                     border-radius: base.$border-radius;
+                    object-fit: cover;
                 }
 
                 transition: transform 0.2s;
@@ -65,46 +113,80 @@
         }
 
         .info-div {
-            // width: 70%;
-            // margin-inline: 30px;
-            height: 500px;
+            height: auto;
             border-radius: 10px;
             background: base.$light-blue;
             display: flex;
             flex-direction: column;
-            // margin-right: 10%;
+            gap: base.$common-padding-small;
             padding: 20px;
-            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
             margin-bottom: 50px;
+            @include base.custom-box-shadow;
+
+            div {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+
+                h4 {
+                    font-size: 20px;
+                    font-weight: 600;
+                }
+            }
+
+            div.delivery {
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                gap: 10px;
+
+                h4 {
+                    font-size: 20px;
+                    font-weight: 600;
+                }
+
+                p {
+                    font-weight: 400;
+                }
+            }
         }
 
         .check-out {
             display: flex;
-            p {
-                padding: 10px;
+
+            p.tos-agreement {
+                font-size: 10px;
             }
+
             .check {
                 accent-color: red;
             }
-    
-            
+
             margin-bottom: 20px;
         }
         .check-out-button {
             display: flex;
             justify-content: center;
             a {
-                background: base.$light-blue;
+                width: 100%;
+                text-align: center;
+                font-family: "Magra", sans-serif;
+                font-weight: 600;
+                background-color: rgb(23, 199, 23);
+                color: base.$text-color-3;
                 border-radius: base.$border-radius;
                 padding: base.$button-padding;
-                box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
             }
             transition: transform 0.2s;
 
             &:hover {
-                transform: scale(1.05);
+                a {
+                    color: base.$text-color;
+                    background-color: rgb(21, 133, 21);
+                }
             }
         }
     }
-    
 }

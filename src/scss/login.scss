@@ -1,0 +1,79 @@
+@use "base";
+@use "tw";
+
+main{
+    display: flex;
+}
+.main {
+    max-width: 500px;
+    width: base.$common-width;
+    // height: 500px;
+    border-radius: base.$border-radius ;
+
+    padding: base.$common-padding;
+    margin-inline: auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    background: base.$dark-blue;
+
+    .error{
+        color: red;
+        font-size: medium;
+    }
+
+    .content{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        input{ 
+            border-radius: base.$border-radius;
+            border: none;
+            font-size: large;
+            height: 50px;
+            text-indent: 10px;
+        }
+        label {
+            display: block;
+            font-size: large;
+        }
+
+        button{
+            max-width: 150px;
+            max-height: 50px;
+            margin-top: 50px;
+
+            background: base.$light-blue;
+            color: base.$text-color;
+            border-radius: base.$border-radius;
+            border: none;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            font-size: x-large;
+
+            transition: base.$custom-transition-time;
+            &:hover{
+                cursor: pointer;
+                background-color: base.$navy-blue;
+            }
+
+            &:active{
+                transform: base.$active-scale;
+                transition: 1ms;
+            }
+        }
+    }
+}

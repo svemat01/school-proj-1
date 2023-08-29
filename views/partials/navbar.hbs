@@ -21,7 +21,7 @@
             </svg>
         </a>
 
-        <div>
+        <div class="links">
             <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/contact">CONTACT</a>
@@ -39,5 +39,21 @@
                 </svg>
             </a>
         </div>
+
+        <div class="divider"></div>
+
+        <div class="account">
+            {{#if user}}
+                {{#if user.admin}}
+                    <a href="/admin">ADMIN</a>
+                {{/if}}
+                <a href="/logout">LOGOUT</a>
+
+            {{else}}
+                <a href="/login">LOGIN</a>
+                <a href="/register">REGISTER</a>
+            {{/if}}
+        </div>
+
     </div>
 </nav>

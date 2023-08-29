@@ -33,7 +33,7 @@
 
     .content {
         gap: 20px;
-        width: calc(100% - 100px);
+        width: base.$common-width;
         max-width: 600px;
 
         display: flex;
@@ -97,16 +97,16 @@
     gap: 70px;
     align-items: center;
 
-    padding-top: 100px;
-    width: calc(100% - 100px);
-    max-width: base.$common-width;
+    padding: 100px 0;
+    width: base.$common-width;
+    max-width: base.$common-max-width;
     margin-inline: auto;
 
     .card {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 40px;
-        max-width: base.$common-width;
+        max-width: base.$common-max-width;
         height: fit-content;
 
         img {

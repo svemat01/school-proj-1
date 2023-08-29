@@ -1,3 +1,4 @@
+
 # Projekt 1
 
 ## Installation
@@ -24,14 +25,15 @@ npm install
 
 Vanlig start
 
-````bash
+```bash
 npm start
+```
 
 Starta med automatisk omstart vid ändringar
 
 ```bash
 npm run dev
-````
+```
 
 ## Verktyg och tekniker som används i projektet
 
@@ -55,6 +57,10 @@ Express är ett ramverk för Node.js som används för att skapa webbapplikation
 
 Handlebars är ett templating-språk som används för att skapa HTML-sidor.
 Med detta kan vi konfiugera views (HTML-sidor) och partials (templates) som kan användas för att skapa dynamiska webbapplikationer.
+
+[Basics](https://handlebarsjs.com/guide/#language-features)
+
+[Loopar och if statements](https://handlebarsjs.com/guide/builtin-helpers.html)
 
 ## Hur fungerar projektet?
 
