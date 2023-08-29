@@ -1,5 +1,5 @@
 @use "base";
-@use "tw";
+@use "main";
 
 .intro {
     position: relative;
@@ -73,17 +73,26 @@
         font-family: "Magra", sans-serif;
         @include base.custom-box-shadow;
 
+        font-size: 20px;
+
         padding: 10px 100px;
         border-radius: base.$border-radius;
 
         background-color: base.$lighter-blue;
+
+        transition: 0.3s transform ease-in-out;
+
+        &:hover {
+            transition: 0.3s transform ease-in-out;
+            transform: scale(1.1);
+
+            cursor: pointer;
+        }
     }
 
     .desc {
         padding: 15px;
         border-radius: base.$border-radius;
-
-        // background-color: base.$dark-blue;
         text-align: center;
         font-size: 20px;
     }
