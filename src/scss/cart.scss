@@ -86,11 +86,11 @@
 
                             &:hover {
                                 cursor: pointer;
-                                color: rgb(179, 0, 0);
+                                color: base.$red;
 
                                 svg {
                                     path {
-                                        fill: rgb(179, 0, 0);
+                                        fill: base.$red;
                                     }
                                 }
                             }
@@ -162,7 +162,7 @@
             }
 
             .check {
-                accent-color: red;
+                accent-color: base.$red; // red ?
             }
 
             margin-bottom: 20px;
@@ -175,7 +175,7 @@
                 text-align: center;
                 font-family: "Magra", sans-serif;
                 font-weight: 600;
-                background-color: rgb(23, 199, 23);
+                background-color: base.$green;
                 color: base.$text-color-3;
                 border-radius: base.$border-radius;
                 padding: base.$button-padding;
@@ -185,7 +185,7 @@
             &:hover {
                 a {
                     color: base.$text-color;
-                    background-color: rgb(21, 133, 21);
+                    background-color: base.$green-dark;
                 }
             }
         }

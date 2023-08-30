@@ -1,1 +1,42 @@
 @use 'base';
+
+body {
+    flex-direction: row;
+}
+
+
+.nav {
+    background:#212529;
+    max-width: 200px;
+    width: 10%;
+    height: 100%;
+    text-align: center;
+    padding: 25px;
+
+    .logo{
+        margin-top: 50px;
+    }
+
+    .button{
+        margin-top: 75px;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+
+        row-gap: 50px;
+        font-weight: 300;
+        font-size: 100%;
+        overflow: hidden;
+
+
+        a{
+            background: #3E92CC;
+            padding:2px;
+            border-radius: 10px;
+            transition: 5ms;
+            &:hover{
+                color: pink;
+            }
+        }
+        
+    }
+}

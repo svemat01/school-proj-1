@@ -19,8 +19,8 @@
     </div>-->
     <div class="products">
         {{#each products}}
-        <a class="product" href="/products/{{this.name}}">
-            <img src="{{this.image}}" alt="{{this.name}}" draggable="false">
+        <a class="product" href="/products/{{this.id}}">
+            <img src="/products/{{this.id}}.jpg" alt="{{this.name}}" draggable="false">
             <div class="info" style="background: {{this.image}}">
                 <div class="title">
                     <h2>{{this.name}}</h2>

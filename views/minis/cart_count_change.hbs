@@ -1,0 +1,16 @@
+<input
+    name="quantity"
+    id="{{item.id}}-count"
+    value={{item.quantity}}
+    min="1"
+    max={{item.stock}}
+    type="number"
+    hx-trigger="change throttle:300ms"
+/>
+
+<div hx-swap-oob="#total-info">
+    <div id="total-info">
+        <h4>Sub-total:</h4>
+        <p>{{total}} ₽</p>
+    </div>
+</div>

@@ -18,7 +18,7 @@ export const DB = Database("database.db");
  * @property {string} id
  * @property {string} username
  * @property {string} password_hash
- * @property {boolean} admin
+ * @property {0 | 1} admin
  */
 
 /**
@@ -28,10 +28,8 @@ export const DB = Database("database.db");
 /**
  * @typedef {Object} Cart
  * @property {number} id
- * @property {string} user_id
+ * @property {string} cid - client id
  * @property {number} product_id
- * @property {Product} product
- * @property {User} user
  * @property {number} quantity
  */
 
@@ -86,10 +84,9 @@ export const setupDB = () => {
     const setupCartsTable = DB.prepare(`
         CREATE TABLE IF NOT EXISTS carts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT NOT NULL,
+            cid TEXT NOT NULL,
             product_id INTEGER NOT NULL,
             quantity INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (product_id) REFERENCES products(id)
         )
     `);
@@ -136,7 +133,7 @@ export const getProduct = (id) => {
  */
 export const getAllProducts = (limit = 25, offset = 0) => {
     /** @type {!import('better-sqlite3').Statement<{ limit: number, offset: number }>} */
-    const getAllProductsStmt = DB.prepare(`
+    const getAllProductsStmt = prepare(`
         SELECT * FROM products LIMIT @limit OFFSET @offset 
     `);
 
@@ -152,13 +149,15 @@ export const getAllProducts = (limit = 25, offset = 0) => {
  * @param {string} id id of user
  * @param {string} username username of user
  * @param {string} password_hash password hash of user
- * @param {boolean} admin whether user is admin
+ * @param {0 | 1} admin whether user is admin
  */
-export const insertUser = (id, username, password_hash, admin = false) => {
+export const insertUser = (id, username, password_hash, admin = 0) => {
     /** @type {!import('better-sqlite3').Statement<User>} */
-    const insertUserStmt = DB.prepare(`
-        INSERT INTO users (id, username, password_hash, admin) VALUES (@id, @username, @password_hash, @admin)
+    const insertUserStmt = prepare(`
+        INSERT INTO users VALUES (@id, @username, @password_hash, @admin)
     `);
+
+    console.log({ id, username, password_hash, admin });
 
     insertUserStmt.run({ id, username, password_hash, admin });
 };
@@ -170,7 +169,7 @@ export const insertUser = (id, username, password_hash, admin = false) => {
  */
 export const getUser = (id) => {
     /** @type {!import('better-sqlite3').Statement<string>} */
-    const getUserStmt = DB.prepare(`
+    const getUserStmt = prepare(`
         SELECT * FROM users WHERE id = ?
     `);
 
@@ -184,14 +183,14 @@ export const getUser = (id) => {
  */
 export const getSecureUser = (id) => {
     /** @type {!import('better-sqlite3').Statement<string>} */
-    const getSecureUserStmt = DB.prepare(`
+    const getSecureUserStmt = prepare(`
         SELECT id, username, admin FROM users WHERE id = ?
     `);
 
     return /** @type {Omit<User, 'password_hash'> | undefined} */ (
         getSecureUserStmt.get(id)
     );
-}
+};
 
 /**
  * Get a user by username from the database
@@ -200,9 +199,218 @@ export const getSecureUser = (id) => {
  */
 export const getUserByUsername = (username) => {
     /** @type {!import('better-sqlite3').Statement<string>} */
-    const getUserByUsernameStmt = DB.prepare(`
+    const getUserByUsernameStmt = prepare(`
         SELECT * FROM users WHERE username = ?
     `);
 
-    return /** @type {User | undefined} */ (getUserByUsernameStmt.get(username));
-}
+    return /** @type {User | undefined} */ (
+        getUserByUsernameStmt.get(username)
+    );
+};
+
+/**
+ * Get all users
+ */
+export const getAllSecureUsers = () => {
+    /** @type {!import('better-sqlite3').Statement} */
+    const getAllSecureUsersStmt = prepare(`
+        SELECT id, username, admin FROM users
+    `);
+
+    return /** @type {SecureUser[]} */ (getAllSecureUsersStmt.all());
+};
+
+// =======================
+// Carts
+// =======================
+
+export const StockError = new Error("Not enough stock");
+
+/**
+ * Insert a cart entry into the database
+ * @param {string} cid id of user
+ * @param {number} product_id id of product
+ * @param {number} quantity quantity of product
+ */
+export const insertCart = (cid, product_id, quantity) => {
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, product_id: number }>} */
+    const alreadyInCartStmt = prepare(`
+        SELECT carts.id, carts.quantity, products.stock
+        FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = @cid AND product_id = @product_id
+    `);
+
+    const alreadyInCart =
+        /** @type {Pick<Cart, 'id' | 'quantity'> & Pick<Product, 'stock'> | undefined} */ (
+            alreadyInCartStmt.get({ cid, product_id })
+        );
+
+    if (alreadyInCart) {
+        /** @type {!import('better-sqlite3').Statement<Pick<Cart, 'id' | 'quantity'>>} */
+        const updateCartStmt = prepare(`
+            UPDATE carts SET quantity = @quantity WHERE id = @id
+        `);
+
+        const newQuantity = alreadyInCart.quantity + quantity;
+
+        if (newQuantity > alreadyInCart.stock) throw StockError;
+
+        return updateCartStmt.run({
+            id: alreadyInCart.id,
+            quantity: alreadyInCart.quantity + quantity,
+        });
+    }
+
+    /** @type {!import('better-sqlite3').Statement<Pick<Cart, 'cid' | 'product_id' | 'quantity'>>} */
+    const insertCartStmt = prepare(`
+        INSERT INTO carts (cid, product_id, quantity)
+        VALUES (@cid, @product_id, @quantity)
+    `);
+
+    insertCartStmt.run({ cid, product_id, quantity });
+};
+
+/**
+ * Delete a cart entry from the database
+ * @param {string} cid id of user
+ * @param {number} id id of cart
+ */
+export const deleteCartEntry = (cid, id) => {
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number }>} */
+    const deleteCartEntryStmt = prepare(`
+        DELETE FROM carts WHERE cid = @cid AND id = @id
+    `);
+
+    deleteCartEntryStmt.run({ cid, id });
+};
+
+/**
+ * Delete all cart entries for a user
+ * @param {string} cid id of user
+ */
+export const deleteCart = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const deleteCartStmt = prepare(`
+        DELETE FROM carts WHERE cid = ?
+    `);
+
+    deleteCartStmt.run(cid);
+};
+
+/**
+ * Get cart entry for a user and product
+ * @param {string} cid id of user
+ * @param {number} id id of cart
+ * @returns {Cart | undefined} cart entry
+ */
+export const getCartEntry = (cid, id) => {
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number }>} */
+    const getCartEntryStmt = prepare(`
+        SELECT * FROM carts WHERE cid = @cid AND id = @id
+    `);
+
+    return /** @type {Cart | undefined} */ (
+        getCartEntryStmt.get({
+            cid,
+            id,
+        })
+    );
+};
+
+/**
+ * Get cart entry for a user and product with product data
+ * @param {string} cid id of user
+ * @param {number} id id of cart
+ * @returns {(Cart & Product) | undefined} cart entry
+ */
+export const getCartEntryWithProduct = (cid, id) => {
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number }>} */
+    const getCartEntryWithProductStmt = prepare(`
+        SELECT carts.*, products.name, products.stock, products.price, products.description FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = @cid AND carts.id = @id
+    `);
+
+    return /** @type {(Cart & Omit<Product, 'id'>) | undefined} */ (
+        getCartEntryWithProductStmt.get({ cid, id })
+    );
+};
+
+/**
+ * Get all cart entries for a user
+ * @param {string} cid id of user
+ * @returns {Omit<Cart, 'product'>[]} cart entries
+ */
+export const getCart = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const getCartStmt = prepare(`
+        SELECT * FROM carts WHERE cid = ?
+    `);
+
+    return /** @type {Omit<Cart, 'product'>[]} */ (getCartStmt.all(cid));
+};
+
+/**
+ * Get all cart entries for a user with products data
+ * @param {string} cid id of user
+ * @returns {(Cart & Product)[]} cart entries
+ */
+export const getCartWithProducts = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const getCartWithProductStmt = prepare(`
+        SELECT carts.*, products.name, products.stock, products.price, products.description FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = ?
+    `);
+
+    return /** @type {(Cart & Omit<Product, 'id'>)[]} */ (
+        getCartWithProductStmt.all(cid)
+    );
+};
+
+/**
+ * Update cart entry quantity
+ * @param {string} cid id of user
+ * @param {number} id id of cart
+ * @param {number} quantity new quantity
+ */
+export const updateCartEntry = (cid, id, quantity) => {
+    // Throw StockError if quantity is greater than stock
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number }>} */
+    const getCartEntryStmt = prepare(`
+        SELECT carts.quantity, products.stock FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = @cid AND carts.id = @id
+    `);
+
+    const cartEntry =
+        /** @type {Pick<Cart, 'quantity'> & Pick<Product, 'stock'> | undefined} */ (
+            getCartEntryStmt.get({ cid, id })
+        );
+
+    if (cartEntry && quantity > cartEntry.stock) throw StockError;
+
+    /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number, quantity: number }>} */
+    const updateCartEntryStmt = prepare(`
+        UPDATE carts SET quantity = @quantity WHERE cid = @cid AND id = @id
+    `);
+
+    updateCartEntryStmt.run({ cid, id, quantity });
+};
+
+/**
+ * Get cart total
+ * @param {string} cid id of user
+ * @returns {number} total
+ */
+export const getCartTotal = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const getCartTotalStmt = prepare(`
+        SELECT SUM(products.price * carts.quantity) AS total FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = ?
+    `);
+
+    return /** @type {{total: number}} */ (getCartTotalStmt.get(cid)).total;
+};

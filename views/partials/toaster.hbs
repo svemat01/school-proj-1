@@ -1,0 +1,41 @@
+<div id="toaster">
+    <template id="toast-template">
+        <div class="toast">
+            <p class="msg"></p>
+            <button class="close">X</button>
+        </div>
+    </template>
+</div>
+
+<script>
+    const toaster = document.getElementById("toaster");
+    const toastTemplate = document.getElementById("toast-template");
+
+    htmx.on("toast", (evt) => {
+        const data = evt.detail;
+
+        /** @type {HTMLDivElement} */
+        const toastFrag = toastTemplate.content.cloneNode(true);
+        const msg = toastFrag.querySelector(".msg");
+        const close = toastFrag.querySelector(".close");
+        const toast = toastFrag.querySelector(".toast");
+
+        msg.innerText = data.msg;
+        toast.style.setProperty("--toast-color", data.color);
+
+        const remove = async () => {
+            toast.classList.add("fade-out");
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            toast.remove();
+        };
+
+        const timeout = setTimeout(remove, 5000);
+
+        close.addEventListener("click", async() => {
+            await remove()
+            clearTimeout(timeout);
+        });
+
+        toaster.appendChild(toastFrag);
+    })
+</script>

@@ -22,9 +22,10 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const hbs = create({
     extname: ".hbs",
     helpers: {
-        'inlineIf': (condition, value) => condition ? value : '',
-        'inlineIfElse': (condition, value, elseValue) => condition ? value : elseValue,
-    }
+        inlineIf: (condition, value) => (condition ? value : ""),
+        inlineIfElse: (condition, value, elseValue) =>
+            condition ? value : elseValue,
+    },
 });
 
 // Säger till express att använda handlebars som template engine ☝️🤓
@@ -38,7 +39,7 @@ app.use(cookieParser("very secret"));
 app.use(
     urlencoded({
         extended: true,
-    })
+    }),
 );
 
 // =======================
@@ -47,6 +48,8 @@ app.use(
 
 // Säger till express att använda public-mappen för att serva statiska filer ☝️🤓
 app.use(express.static(path.join(__dirname, "../public")));
+
+app.use('/products', express.static(path.join(__dirname, "../upload")));
 
 // Använd router from ./routes/index.js
 app.use(router);

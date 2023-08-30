@@ -1,0 +1,40 @@
+<div class="body">
+    <div class="splitLeft">
+        <div class="admin"> 
+            <h1> ADMIN <h1>
+        </div>
+        <div class="money">
+            <div id="title">
+                <h1>Earnings</h1>
+            </div>
+            <div id="sum">
+                <p>0.00kr</p>
+            </div>
+        </div>
+    </div>
+    <div class="splitRight">
+        <div class="adminlist">
+            <div class="title">
+                <h1>ADMIN LIST</h1>
+            </div>
+            <div id="list">
+                <ul>
+                    {{#each adminUsers}}
+                    <li class="indiv">
+                        {{this.username}}
+                        <button>
+                    </li>
+                    <li class="indiv">
+                        Master Oogway II
+                        <button>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+
+        </div>
+        <div class="settings">
+            <p> Settings </p>
+        </div>
+    </div>
+</div>

@@ -7,11 +7,10 @@
     </div>
     <div class="cart-flex">
         <div class="items-in-cart">
-            {{#each products}}
+            {{#each items}}
 
                 <div class="cart-item">
-                    <!-- href="/products/{{this.name}}" ??????? -->
-                    <img src="{{this.image}}" draggable="false" />
+                    <img src="/products/{{this.product_id}}.jpg" draggable="false" />
                     <div class="content">
                         <div>
                             <h2>{{this.name}}</h2>
@@ -28,23 +27,28 @@
                                         d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
                                     />
                                 </svg>
-                                <p>Remove</p>
+                                <button hx-delete="/cart/{{this.id}}" hx-target=".cart" hx-swap="outerHTML">Remove</button>
                             </div>
                         </div>
                         <div>
                             <h3>{{this.price}} ₽</h3>
-                            <p>Count</p>
+                            <label for="{{this.id}}-count">Count</labe>
 
-                            <!-- NOTE: Replace with actual value as well as max with current inventory -->
-                            <input value="1" min="1" max="20" type="number" />
+                            <input name="quantity" id="{{this.id}}-count" value={{this.quantity}} min="1" max={{this.stock}} type="number" hx-trigger="change throttle:300ms" hx-patch="/cart/{{this.id}}" hx-swap="outerHTML" />
                         </div>
                     </div>
                 </div>
             {{/each}}
+            {{#if isEmpty}}
+                <div class="empty">
+                    <h2>Cart is empty</h2>
+                    <p>Go to <a href="/products">products</a> to add items to your cart.</p>
+                </div>
+            {{/if}}
         </div>
         <div>
             <div class="info-div">
-                <div>
+                <div id="total-info">
                     <h4>Sub-total:</h4>
                     <p>{{total}} ₽</p>
                 </div>

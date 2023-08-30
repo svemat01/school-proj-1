@@ -2,5 +2,119 @@
 @use "main";
 
 main {
+    padding: base.$common-padding 0;
+}
+
+#product {
     display: flex;
-} 
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: auto;
+
+    max-width: base.$common-max-width;
+    height: 60dvh;
+    //padding: base.$common-padding 0;
+
+    border-radius: base.$border-radius;
+    overflow: hidden;
+
+    // gap: base.$common-gap;
+
+    flex-flow: row wrap;
+
+    .product-info-container {
+        flex: 1 1 auto;
+        // width: 70%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        background-color: base.$navy-blue;
+
+
+        div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+
+            p {
+                padding: base.$common-padding-small;
+                font-size: 18px;
+
+                height: 100%;
+                width: auto;
+            }
+
+            img {
+                max-height: 50dvh;
+                height: 100%;
+                width: auto;
+                object-fit: contain;
+                border-bottom-right-radius: base.$border-radius;
+            }
+
+            div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                max-height: 10dvh;
+                height: 100%;
+
+                h2 {
+                    
+                    font-family: "Magra", sans-serif;
+                    font-size: 24px;
+    
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+    .purchase-container {
+        background-color: base.$light-blue;
+        flex: 1 1 auto;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+
+        padding: base.$common-padding-small;
+
+        gap: base.$common-gap;
+
+        div {
+            display: flex;
+            flex-direction: row;
+            align-items: end;
+            gap: base.$common-padding-small;
+        }
+
+        button {
+            width: fit-content;
+            font-family: "Magra", sans-serif;
+            font-size: 24px;
+            padding: 2vh 2vw;
+            background-color: base.$green;
+            color: base.$text-color-3;
+            font-weight: 600;
+            border: none;
+            outline: none;
+            border-radius: base.$border-radius;
+            transition: 0.2s background-color ease-in-out;
+            transition: 0.3s transform ease-in-out;
+
+            &:hover {
+                transition: 0.2s background-color ease-in-out;
+                transition: 0.3s transform ease-in-out;
+                transform: scale(1.1);
+                background-color: base.$green-dark;
+                cursor: pointer;
+            }
+        }
+    }
+}
