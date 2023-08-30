@@ -6,11 +6,11 @@
     max={{item.stock}}
     type="number"
     hx-trigger="change throttle:300ms"
+    hx-patch="/cart/{{item.id}}"
+    hx-swap="outerHTML"
 />
 
-<div hx-swap-oob="#total-info">
-    <div id="total-info">
-        <h4>Sub-total:</h4>
-        <p>{{total}} ₽</p>
-    </div>
+<div id="total-info" hx-swap-oob="true">
+    <h4>Sub-total:</h4>
+    <p>{{total}} ₽</p>
 </div>

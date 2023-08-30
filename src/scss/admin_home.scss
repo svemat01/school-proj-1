@@ -12,6 +12,7 @@
 
     .title{
         background-color: #3E92CC;
+        padding: 2px;
     }
 
     .splitLeft{
@@ -22,7 +23,8 @@
 
         .admin{
             width: 150px;
-            background: #343A40;
+            background: #3E92CC;
+            border-radius: 15px;
 
             margin-inline: auto;
             margin-top: 10%;
@@ -56,7 +58,7 @@
     .splitRight{
         width: 50%;
         height: 100%;
-        background: #495057;
+        background:#495057;
 
 
         .adminlist{

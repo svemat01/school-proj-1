@@ -280,14 +280,14 @@ router.route("/cart/:id").post((req, res) => {
         return res.setHeader('HX-Location', '/cart').send();
     }
 
-    const item = getCartEntryWithProduct(req.cid, Number(id));
-
-    const total = getCartTotal(req.cid);
-
     try {
         updateCartEntry(req.cid, Number(id), Number(quantity));
     } catch (error) {
         if (error === StockError) {
+            const item = getCartEntryWithProduct(req.cid, Number(id));
+        
+            const total = getCartTotal(req.cid);
+
             return res.setHeader(
                 "HX-Trigger",
                 JSON.stringify({
@@ -306,6 +306,20 @@ router.route("/cart/:id").post((req, res) => {
 
         console.log({error})
     }
+
+    const item = getCartEntryWithProduct(req.cid, Number(id));
+
+    const total = getCartTotal(req.cid);
+
+    res.setHeader(
+        'HX-Trigger',
+        JSON.stringify({
+            toast: {
+                msg: `Updated ${item?.name} quantity`,
+                color: "green",
+            },
+        }),
+    )
 
     res.render("minis/cart_count_change", {
         ...req.templateData,
