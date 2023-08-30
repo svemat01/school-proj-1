@@ -1,29 +1,30 @@
-@use 'base';
-@use 'admin';
+@use "base";
+@use "admin";
 
-
-
-.body{
+.body {
     width: 100%;
     height: 100%;
-    //background: #343A40;
     display: flex;
     flex-direction: row;
+    overflow: scroll;
 
-    .title{
-        background-color: #3E92CC;
+    @media (max-width: 921px) {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .title {
+        background-color: #3e92cc;
         padding: 2px;
     }
 
-    .splitLeft{
+    .splitLeft {
         width: 50%;
-        height: 100%;
-        background: #343A40;
-        
+        min-width: 400px;
 
-        .admin{
+        .admin {
             width: 150px;
-            background: #3E92CC;
+            background: #3e92cc;
             border-radius: 15px;
 
             margin-inline: auto;
@@ -32,52 +33,52 @@
             text-align: center;
             padding: 10px;
         }
-        .money{
+        .money {
             width: 250px;
             height: 150px;
-            background: #6C757D;
+            background: #6c757d;
+            box-shadow: base.$box-shadow;
 
             margin-inline: auto;
             margin-top: 150px;
 
             text-align: center;
 
-            #sum{
-                background-color: #3E92CC;
+            #sum {
+                background-color: #3e92cc;
                 font-size: 20px;
                 width: 90%;
                 height: 25px;
 
                 margin-top: 50px;
                 margin-inline: auto;
-                overflow: scroll;
+                overflow: hidden;
             }
         }
     }
 
-    .splitRight{
+    .splitRight {
         width: 50%;
-        height: 100%;
-        background:#495057;
+        min-width: 400px;
 
-
-        .adminlist{
-            width: 400px;
-            height: 200px;
-
-            max-height: 200px;
-            max-width: 400px;
-            background: #6C757D;
+        .adminlist {
+            min-width: 300px;
+            min-height: 200px;
+        
+            height: 20%;
+            width: 200px;
+            background: #6c757d;
+            box-shadow: base.$box-shadow;
 
             margin-inline: auto;
             margin-top: 75px;
 
             text-align: center;
 
-            #list{
-                background: #6C757D;
-                height: 100%;
-                width: 100%;
+            overflow: scroll;
+
+            #list {
+                background: #6c757d;
 
                 padding-top: 10px;
 
@@ -85,32 +86,47 @@
                 grid-template-columns: repeat(1, 1fr);
                 row-gap: 10px;
 
-                .indiv{
+                .indiv {
                     width: 100%;
-                    background: #2A628F;
-                    
+                    background: #2a628f;
+
                     padding: 10px;
+                    padding-right: 5%;
                     margin-top: 5px;
-                    
+
                     display: flex;
                     justify-content: space-between;
 
-                    button{
-                        width: 15px;
+                    button {
+                        width: 45px;
                         height: 15px;
+                        border-radius: 10px;
+                        border: 1.5px solid black;
+                        background: #cc3e60;
+
+                        &:hover {
+                            cursor: pointer;;
+                        }
+
+                        &:active {
+                            transform: base.$active-scale;
+                            transition: 1ms;
+                        }
                     }
                 }
             }
-
         }
 
-        .settings{
+        .settings {
             width: 350px;
             height: 250px;
-            background: #2A628F;
+            background: #6c757d;
+            box-shadow: base.$box-shadow;
 
             margin-inline: auto;
-            margin-top: 50px;
+            margin-top: 75px;
+
+            text-align: center;
         }
     }
 }

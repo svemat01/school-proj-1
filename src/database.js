@@ -162,7 +162,7 @@ export const insertUser = (id, username, password_hash, admin = 0) => {
     insertUserStmt.run({ id, username, password_hash, admin });
 };
 
-/**
+/**F
  * Get a user from the database
  * @param {string} id id of user
  * @returns {User | undefined} user
@@ -219,6 +219,46 @@ export const getAllSecureUsers = () => {
 
     return /** @type {SecureUser[]} */ (getAllSecureUsersStmt.all());
 };
+
+/**
+ * Delete a specific user
+ * @param {string} cid id of user
+ */
+export const deleteUser = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const deleteUserStmt = prepare(`
+        DELETE FROM users WHERE id = ?
+    `);
+
+    deleteUserStmt.run(cid);
+}
+
+/**
+ * Promote a specific user
+ * @param {string} cid id of user
+ */
+ export const promoteUser = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const promoteUserStmt = prepare(`
+        UPDATE users SET admin = 1 WHERE id = ?
+    `);
+
+    promoteUserStmt.run(cid);
+}
+
+/**
+ * Demote a specific user
+ * @param {string} cid id of user
+ */
+ export const demoteUser = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const demoteUserStmt = prepare(`
+        UPDATE users SET admin = 0 WHERE id = ?
+    `);
+
+    demoteUserStmt.run(cid);
+}
+
 
 // =======================
 // Carts
@@ -414,3 +454,4 @@ export const getCartTotal = (cid) => {
 
     return /** @type {{total: number}} */ (getCartTotalStmt.get(cid)).total;
 };
+

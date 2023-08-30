@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllSecureUsers } from '../database.js';
+import { getAllSecureUsers, deleteUser, promoteUser, demoteUser } from '../database.js';
 
 export const adminRouter = Router();
 
@@ -29,8 +29,32 @@ adminRouter.get('/', (req, res) => {
         adminUsers,
     })
 })
-adminRouter.get('/admin_users', (req, res) => {
+
+adminRouter.get('/users', (req, res) => {
+    const users = getAllSecureUsers();
     res.render('admin_users', {
         ...req.templateData,
+        users,
     })
+})
+
+adminRouter.delete("/delete_user/:id", (req, res) => {
+    const { id } = req.params;
+    deleteUser(id);
+
+    res.setHeader('HX-Location', '/admin/users').send();
+})
+
+adminRouter.post("/demote_user/:id", (req, res) => {
+    const { id } = req.params;
+    demoteUser(id);
+
+    res.setHeader('HX-Location', '/admin').send();
+})
+
+adminRouter.post("/promote_user/:id", (req, res) => {
+    const { id } = req.params;
+    promoteUser(id);
+
+    res.setHeader('HX-Location', '/admin/users').send();
 })

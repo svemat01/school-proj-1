@@ -110,10 +110,15 @@ main {
 
             &:hover {
                 transition: 0.2s background-color ease-in-out;
-                transition: 0.3s transform ease-in-out;
-                transform: scale(1.1);
+                //transition: 0.3s transform ease-in-out;
+                //transform: scale(1.1);
                 background-color: base.$green-dark;
                 cursor: pointer;
+            }
+
+            &:active{
+                transform: base.$active-scale;
+                transition: 1ms;
             }
         }
     }

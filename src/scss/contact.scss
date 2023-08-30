@@ -107,6 +107,11 @@
                     background-color: base.$navy-blue;
                     transition: base.$custom-transition-time;
                 }
+
+                &:active{
+                    transform: base.$active-scale;
+                    transition: 1ms;
+                }
             }
         }
 

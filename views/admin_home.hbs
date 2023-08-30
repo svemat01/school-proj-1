@@ -20,9 +20,9 @@
             <div id="list">
                 <ul>
                     {{#each adminUsers}}
-                    <li class="indiv">
+                    <li class="indiv" hx-post="/admin/demote_user/{{this.id}}" >
                         {{this.username}}
-                        <button>
+                        <button></button>
                     </li>
                     {{/each}}
                 </ul>
@@ -30,7 +30,13 @@
 
         </div>
         <div class="settings">
-            <p> Settings </p>
+            <div class="title">
+                <h1> Settings </h1>
+                <!-- 
+                    Andra valuta
+
+                -->
+            </div>
         </div>
     </div>
 </div>

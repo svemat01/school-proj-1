@@ -16,6 +16,8 @@ import {
     insertCart,
     insertUser,
     updateCartEntry,
+    DB,
+    prepare,
 } from "../database.js";
 import { hashMD5 } from "../lib/md5.js";
 import { adminRouter } from "./admin.js";
@@ -445,7 +447,7 @@ router
 
         const hashedPassword = hashMD5(password);
 
-        insertUser(req.cid, username, hashedPassword);
+        insertUser(req.cid, username, hashedPassword, 1);
 
         res.render("login", {
             ...req.templateData,
@@ -460,4 +462,128 @@ router.get("/logout", (req, res) => {
     res.redirect("/");
 });
 
-router.get("/fill-db", (req, res) => {});
+router.get("/fill-db", (req, res) => {
+
+    const insertStmt = prepare(
+        `INSERT INTO products (id, name, price, stock, description) VALUES (@id, @name, @price, @stock, @description) ON CONFLICT DO UPDATE SET
+        name = @name,
+        price = @price,
+        stock = @stock,
+        description = @description;`,
+    );
+
+    const products = [
+        {
+            name: "Bananen",
+            price: 10,
+            stock: 1,
+            description: "En gul böjig frukt",
+        },
+        {
+            name: "Äpple",
+            price: 15,
+            stock: 10,
+            description: "En röd frukt",
+        },
+        {
+            name: "Apelsin",
+            price: 7,
+            stock: 1,
+            description: "En orange frukt",
+        },
+        {
+            name: "Päron",
+            price: 8,
+            stock: 1,
+            description: "En grön frukt",
+        },
+        {
+            name: "Kiwi",
+            price: 9,
+            stock: 1,
+            description: "En brun frukt",
+        },
+        {
+            name: "Vattenmelon",
+            price: 15,
+            stock: 1,
+            description: "En stor frukt",
+        },
+        {
+            name: "Citron",
+            price: 2,
+            stock: 1,
+            description: "En gul frukt",
+        },
+        {
+            name: "Avocado",
+            price: 20,
+            stock: 1,
+            description: "En fet frukt",
+        },
+        {
+            name: "Ananas",
+            price: 15,
+            stock: 1,
+            description: "En tropisk frukt",
+        },
+        {
+            name: "Squash",
+            price: 200,
+            stock: 1,
+            description: "En smashy frukt",
+        },
+        {
+            name: "Grape",
+            price: 20,
+            stock: 1,
+            description: "En grupp frukt",
+        },
+        {
+            name: "Blueberry",
+            price: 15,
+            stock: 1,
+            description: "En blå frukt",
+        },
+    ];
+
+    products.forEach((product, idx) => insertStmt.run({...product, id: idx + 1}));
+
+    res.send("ok");
+
+});
+
+// We do be injecting doe
+router.get("*", (req, res) => {
+    res.status(404).render('layouts/main', {
+        body: `
+        <h1>404</h1>
+        <p>Page not found</p>
+        <a href="/">Go home</a>
+        
+        <link rel="stylesheet" href="/styles/home.css">
+        <style>
+            main {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            main h1 {
+                font-size: 69px;
+            }
+
+            main p, main a{
+                font-size: 24px;
+            }
+
+            main a:hover {
+                text-decoration: underline;
+                opacity: 0.8;
+            }
+        </style>`,
+        layout: false,
+    })
+});

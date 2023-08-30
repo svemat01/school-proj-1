@@ -1,1 +1,21 @@
-a
+<div class="body">
+    <div class="userlist">
+        <div class="title">
+            USERS
+        </div>
+        <div id="list">
+                <ul>
+                    {{#each users}}
+                    <li class="indiv">
+                        <p>{{this.username}}</p>
+                        <div class="buttons">
+                            <button class="admButton" hx-post="/admin/promote_user/{{this.id}}">
+                            <button class="delButton" hx-delete="/admin/delete_user/{{this.id}}">
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+    </div>
+
+</div>

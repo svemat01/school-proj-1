@@ -1,2 +1,94 @@
-@use 'base';
-@use 'admin';
+@use "base";
+@use "admin";
+
+.body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+
+    overflow: scroll;
+
+
+    .title {
+        text-align: center;
+    }
+
+    .userlist {
+        width: 100%;
+        height: 100%;
+
+        margin-inline: auto;
+
+        text-align: center;
+
+        #list {
+            height: 100%;
+            width: 100%;
+
+            padding-top: 25px;
+
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+
+            .indiv {
+                width: 97%;
+                min-width: 200px;
+                background: #18435a;
+                box-shadow: base.$box-shadow;
+                border-radius: 5px;
+
+                padding: 10px;
+                margin-inline: auto;
+                margin-top: 20px;
+
+                display: flex;
+                justify-content: space-between;
+
+                p {
+                    background: #3e92cc;
+                    padding: 5px;
+                    border-radius: 5px;
+                }
+
+                .buttons {
+                    .admButton {
+                        width: 45px;
+                        height: 15px;
+                        border-radius: 10px;
+                        border: 1.5px solid black;
+                        background: #3e92cc;
+
+                        margin-top: 5px;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+
+                        &:active {
+                            transform: base.$active-scale;
+                            transition: 1ms;
+                        }
+                    }
+
+                    .delButton {
+                        width: 45px;
+                        height: 15px;
+                        border-radius: 10px;
+                        border: 1.5px solid black;
+                        background: #cc3e60;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+
+                        &:active {
+                            transform: base.$active-scale;
+                            transition: 1ms;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
