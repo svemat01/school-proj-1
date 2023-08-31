@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllSecureUsers, deleteUser, promoteUser, demoteUser } from '../database.js';
+import { getAllSecureUsers, deleteUser, promoteUser, demoteUser, getAllProducts } from '../database.js';
 
 export const adminRouter = Router();
 
@@ -32,9 +32,13 @@ adminRouter.get('/', (req, res) => {
 
 adminRouter.get('/users', (req, res) => {
     const users = getAllSecureUsers();
+    const normUsers = users.filter((user)=> user.admin === 0)
+    const adminUsers = users.filter((user)=> user.admin === 1)
     res.render('admin_users', {
         ...req.templateData,
-        users,
+        normUsers,
+        adminUsers,
+        users
     })
 })
 
@@ -52,9 +56,24 @@ adminRouter.post("/demote_user/:id", (req, res) => {
     res.setHeader('HX-Location', '/admin').send();
 })
 
+adminRouter.post("/demote_users/:id", (req, res) => {
+    const { id } = req.params;
+    demoteUser(id);
+
+    res.setHeader('HX-Location', '/admin/users').send();
+})
+
 adminRouter.post("/promote_user/:id", (req, res) => {
     const { id } = req.params;
     promoteUser(id);
 
     res.setHeader('HX-Location', '/admin/users').send();
+})
+
+adminRouter.get('/products', (req, res) => {
+    const products = getAllProducts();
+    res.render('admin_products', {
+        ...req.templateData,
+        products,
+    })
 })

@@ -3,6 +3,8 @@
 body {
     flex-direction: row;
     background: #343a40;
+    height: 100%;
+    overflow: hidden;
 }
 
 #nav {
@@ -37,7 +39,7 @@ body {
             transition: 5ms;
             &:hover {
                 transform: scale(1.05);
-                background: #2a628f
+                background: #2a628f;
             }
         }
 

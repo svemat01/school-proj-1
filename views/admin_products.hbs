@@ -1,0 +1,35 @@
+<div class="body">
+    <table class="users-table">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price (₽)</th>
+            <th>Stock</th>
+        </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+                <tr>
+                    <td>
+                        {{this.id}}
+                    </td>
+                    <td>
+                        {{this.name}}
+                    </td>
+                    <td>
+                        {{this.description}}
+                    </td>
+                    <td>
+                        <input type="number" value={{this.price}} />
+                    </td>
+                    
+                    <td>
+                        <input min="0" type="number" value={{this.stock}} />
+                    </td>
+                </tr>
+            {{/each}}
+        </div>
+    </tbody>
+</div>

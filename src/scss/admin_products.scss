@@ -1,0 +1,44 @@
+@use "base";
+@use "admin";
+
+main {
+    height: 100dvh;
+    overflow: auto;
+}
+
+.body {
+    width: 100%;
+    height: 100%;
+    padding: 0 base.$common-padding;
+
+    .users-table {
+        width: 100%;
+        height: 80%;
+        // border-collapse: collapse;
+        overflow: scroll;
+
+        thead {
+         
+
+
+            tr {
+                background-color: base.$navy-blue;
+                    position: sticky;
+                    top: 0;
+                th {
+                    
+                    text-align: left;
+                }
+            }
+        }
+
+        tbody {
+            height: 100px;
+            tr {
+                td {
+                    text-align: left;
+                }
+            }
+        }
+    }
+}

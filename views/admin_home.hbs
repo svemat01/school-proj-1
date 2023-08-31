@@ -1,42 +1,38 @@
 <div class="body">
-    <div class="splitLeft">
-        <div class="admin"> 
-            <h1> ADMIN <h1>
+    <div class="information">
+        <div id="title">
+            <h1>Information</h1>
         </div>
-        <div class="money">
-            <div class="title">
-                <h1>Earnings</h1>
+        <div class="content">
+            <div class="income">
+                <h1>Loot</h1>
+                <div id="sum">
+                    <p>0.00kr</p>
+                </div>
             </div>
-            <div id="sum">
-                <p>0.00kr</p>
+            <div class="lager">
+                <h1>Stock</h1>
+                <div id="sum">
+                    <p>0 st</p>
+                </div>
+            </div>
+            <div class="users">
+                <h1>Användare</h1>
+                <div id="sum">
+                    <p>0 st</p>
+                </div>
+            </div>
+            <div class="sold">
+                <h1>Sold</h1>
+                <div id="sum">
+                    <p>0 st</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="splitRight">
-        <div class="adminlist">
-            <div class="title">
-                <h1>ADMIN LIST</h1>
-            </div>
-            <div id="list">
-                <ul>
-                    {{#each adminUsers}}
-                    <li class="indiv" hx-post="/admin/demote_user/{{this.id}}" >
-                        {{this.username}}
-                        <button></button>
-                    </li>
-                    {{/each}}
-                </ul>
-            </div>
-
-        </div>
-        <div class="settings">
-            <div class="title">
-                <h1> Settings </h1>
-                <!-- 
-                    Andra valuta
-
-                -->
-            </div>
+    <div class="settings">
+        <div id="title">
+            <h1>Settings</h1>
         </div>
     </div>
 </div>

@@ -1,21 +1,29 @@
 <div class="body">
-    <div class="userlist">
+   <div class="userlist">
         <div class="title">
-            USERS
+            <div class="name">
+                <p>NAME</p>
+            </div>
+            <div class="action">
+                <p>ACTIONS</p>
+            </div>
         </div>
         <div id="list">
                 <ul>
                     {{#each users}}
-                    <li class="indiv">
+                    <li {{#if this.admin}} class="userindiv useradmin" {{else}} class="userindiv" {{/if}}>
                         <p>{{this.username}}</p>
                         <div class="buttons">
-                            <button class="admButton" hx-post="/admin/promote_user/{{this.id}}">
-                            <button class="delButton" hx-delete="/admin/delete_user/{{this.id}}">
+                            {{#if this.admin}}
+                            <button class="demButton" hx-post="/admin/demote_users/{{this.id}}"> Demote </button>
+                            {{/if}}
+                            <button class="admButton" hx-post="/admin/promote_user/{{this.id}}"> Promote </button>
+                            <button class="delButton" hx-delete="/admin/delete_user/{{this.id}}"> Delete </button>
                         </div>
                     </li>
                     {{/each}}
+
                 </ul>
             </div>
-    </div>
-
+    </div> 
 </div>
