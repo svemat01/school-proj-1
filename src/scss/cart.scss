@@ -12,6 +12,11 @@
     padding-top: 60px;
     padding-bottom: 100px;
 
+    @media screen and (max-width: base.$tablet-width) {
+        width: calc(100% - 60px);
+        margin-inline: auto;
+    }
+
     .cart-text-border {
         height: auto;
         width: 100%;
@@ -32,6 +37,11 @@
         grid-template-columns: repeat(5, 1fr);
         gap: 50px;
         width: 100%;
+
+        @media screen and (max-width: base.$tablet-width) {
+            display: flex;
+            flex-direction: column;
+        }
 
         .items-in-cart {
             // margin-inline: 50px;
@@ -56,6 +66,11 @@
                     flex-direction: row;
                     align-items: start;
                     justify-content: space-between;
+
+                    @media screen and (max-width: base.$tablet-width) {
+                        display: flex;
+                        flex-direction: column;
+                    }
 
                     div {
                         display: flex;
@@ -170,7 +185,8 @@
         .check-out-button {
             display: flex;
             justify-content: center;
-            a {
+            button {
+                font-size: 20px;
                 width: 100%;
                 text-align: center;
                 font-family: "Magra", sans-serif;
@@ -179,11 +195,13 @@
                 color: base.$text-color-3;
                 border-radius: base.$border-radius;
                 padding: base.$button-padding;
+                border: none;
             }
             transition: transform 0.2s;
 
             &:hover {
-                a {
+                button {
+                    cursor: pointer;
                     color: base.$text-color;
                     background-color: base.$green-dark;
                 }

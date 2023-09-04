@@ -6,6 +6,8 @@ main {
 }
 
 #product {
+    @include base.custom-box-shadow;
+
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -14,6 +16,7 @@ main {
 
     max-width: base.$common-max-width;
     height: 60dvh;
+    width: 70dvw;
     //padding: base.$common-padding 0;
 
     border-radius: base.$border-radius;
@@ -24,8 +27,9 @@ main {
     flex-flow: row wrap;
 
     .product-info-container {
+
         flex: 1 1 auto;
-        // width: 70%;
+        width: 70%;
         height: 100%;
         display: flex;
         flex-direction: row;
@@ -40,6 +44,8 @@ main {
             height: 100%;
 
             p {
+                text-shadow: base.$text-shadow;
+
                 padding: base.$common-padding-small;
                 font-size: 18px;
 
@@ -50,9 +56,16 @@ main {
             img {
                 max-height: 50dvh;
                 height: 100%;
-                width: auto;
+                max-width: 50dvh;
+                width: 100%;
                 object-fit: contain;
                 border-bottom-right-radius: base.$border-radius;
+
+
+                // NOTE: Do NOT remove! This removes the border around the image if
+                // the source isn't found. There is not a single post online suggesting this
+                // solution so I (David) take full credit for this makeshift solution. :^)
+                border: 1px solid transparent;
             }
 
             div {
@@ -81,18 +94,25 @@ main {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: start;
+        justify-content: space-evenly;
 
         padding: base.$common-padding-small;
 
         gap: base.$common-gap;
 
-        div {
-            display: flex;
-            flex-direction: row;
-            align-items: end;
-            gap: base.$common-padding-small;
-        }
+       div {
+           display: flex;
+           flex-direction: column;
+           gap: base.$common-gap;
+            div {
+                display: flex;
+                flex-direction: row;
+                align-items: end;
+                gap: base.$common-padding-small;
+            text-shadow: base.$text-shadow;
+
+            }
+       }
 
         button {
             width: fit-content;

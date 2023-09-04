@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { v4 as uuidv4 } from "uuid";
 
 export const DB = Database("database.db");
 
@@ -11,6 +12,7 @@ export const DB = Database("database.db");
  * @property {number} stock
  * @property {number} price
  * @property {string} description
+ * @property {string} category
  */
 
 /**
@@ -31,6 +33,16 @@ export const DB = Database("database.db");
  * @property {string} cid - client id
  * @property {number} product_id
  * @property {number} quantity
+ */
+
+/**
+ * @typedef {Object} Order
+ * @property {number} id
+ * @property {string} oid - order id
+ * @property {string} cid - client id
+ * @property {number} product_id
+ * @property {number} quantity
+ * @property {string} price
  */
 
 /**
@@ -64,7 +76,8 @@ export const setupDB = () => {
             name TEXT NOT NULL,
             stock INTEGER NOT NULL,
             price INTEGER NOT NULL,
-            description TEXT NOT NULL
+            description TEXT NOT NULL,
+            category TEXT NOT NULL
         )
     `);
 
@@ -92,26 +105,58 @@ export const setupDB = () => {
     `);
 
     setupCartsTable.run();
+
+    // An order should have a user id, the products they ordered, and the quantity of each product, and the total price
+    const setupOrdersTable = DB.prepare(`
+        CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            oid TEXT NOT NULL,
+            cid TEXT NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL,
+            price INTEGER NOT NULL,
+            FOREIGN KEY (product_id) REFERENCES products(id)
+        )
+    `);
+
+    setupOrdersTable.run();
 };
 
 // =======================
-// Products
-// =======================
+// #region Products
 
 /**
- * Insert a product into the database
+ * Insert or update a product into the database
  * @param {string} name name of product
  * @param {number} stock number of products in stock
  * @param {number} price price of product
  * @param {string} description description of product
+ * @param {string} category category of product
  */
-export const insertProduct = (name, stock, price, description) => {
+export const insertProduct = (name, stock, price, description, category) => {
     /** @type {!import('better-sqlite3').Statement<Omit<Product, 'id'>>} */
     const insertProductStmt = prepare(`
-        INSERT INTO products (name, stock, price, description) VALUES (@name, @stock, @price, @description)
+        INSERT INTO products (name, stock, price, description, category) VALUES (@name, @stock, @price, @description, @category);
     `);
 
-    insertProductStmt.run({ name, stock, price, description });
+    insertProductStmt.run({ name, stock, price, description, category });
+};
+/**
+* Update product into the database
+* @param {number} id id of product
+* @param {string} name name of product
+* @param {number} stock number of products in stock
+* @param {number} price price of product
+* @param {string} description description of product
+* @param {string} category category of product
+*/
+export const updateProduct = (id, name, stock, price, description, category) => {
+    /** @type {!import('better-sqlite3').Statement<Omit<Product, ''>>}*/
+    const updateProductStmt = prepare(`
+        UPDATE products SET name = @name, stock = @stock, price = @price, description = @description, category = @category WHERE id = @id;
+    `);
+
+    updateProductStmt.run({ id, name, stock, price, description, category });
 };
 
 /**
@@ -140,9 +185,58 @@ export const getAllProducts = (limit = 25, offset = 0) => {
     return /** @type {Product[]} */ (getAllProductsStmt.all({ limit, offset }));
 };
 
+/**
+* Get all products from the database
+* @param {string} search search term
+* @param {number} limit number of products to get
+* @returns {Product[]} products
+*/
+export const searchProducts = (search, limit = 25) => {
+    /** @type {!import('better-sqlite3').Statement<{ search: string, limit: number }>} */
+    const searchProductsStmt = prepare(`
+        SELECT * FROM products WHERE name LIKE '%' || @search || '%' LIMIT @limit
+    `);
+
+    return /** @type {Product[]} */ (searchProductsStmt.all({
+        search,
+        limit,
+    }));
+};
+
+/**
+ * Filter products from the database by category, search term, and sort.
+ * All params are optional.
+ * @param {string} [category] category of product
+ * @param {string} [search] search term
+ * @param {string} [sort] sort by
+ * @param {number} [limit] number of products to get
+ * @returns {Product[]} products
+ */
+export const filterProducts = (category, search, sort, limit = 25) => {
+    /** @type {!import('better-sqlite3').Statement<{ category?: string, search?: string, limit?: number }>} */
+    const filterProductsStmt = prepare(`
+        SELECT * FROM products 
+        ${category ? "WHERE category = @category" : ""}
+        ${search ? category && search ? "AND" : "WHERE" + " name LIKE '%' || @search || '%'" : ""}
+        ${sort ? `ORDER BY ${sort}` : ""}
+        LIMIT @limit
+    `);
+
+    return /** @type {Product[]} */ (
+        filterProductsStmt.all({
+            category,
+            search,
+            limit,
+        })
+    );
+
+};
+
+// #endregion Products
 // =======================
-// Users
+
 // =======================
+// #region Users
 
 /**
  * Insert a user into the database
@@ -221,6 +315,18 @@ export const getAllSecureUsers = () => {
 };
 
 /**
+ * Get total amount of users
+ */
+export const getUserCount = () => {
+    /** @type {!import('better-sqlite3').Statement} */
+    const getUserCountStmt = prepare(`
+        SELECT COUNT(*) AS user_count FROM users
+    `);
+
+    return /** @type {{user_count: number}} */ (getUserCountStmt.get())
+}
+
+/**
  * Delete a specific user
  * @param {string} cid id of user
  */
@@ -231,41 +337,51 @@ export const deleteUser = (cid) => {
     `);
 
     deleteUserStmt.run(cid);
-}
+};
 
 /**
  * Promote a specific user
  * @param {string} cid id of user
  */
- export const promoteUser = (cid) => {
+export const promoteUser = (cid) => {
     /** @type {!import('better-sqlite3').Statement<string>} */
     const promoteUserStmt = prepare(`
         UPDATE users SET admin = 1 WHERE id = ?
     `);
 
     promoteUserStmt.run(cid);
-}
+};
 
 /**
  * Demote a specific user
  * @param {string} cid id of user
  */
- export const demoteUser = (cid) => {
+export const demoteUser = (cid) => {
     /** @type {!import('better-sqlite3').Statement<string>} */
     const demoteUserStmt = prepare(`
         UPDATE users SET admin = 0 WHERE id = ?
     `);
 
     demoteUserStmt.run(cid);
+};
+
+// #endregion Users
+// =======================
+
+// =======================
+// #region Carts
+
+export class StockError extends Error {
+    /**
+     * @param {string} message
+     * @param {number} productId
+     */
+    constructor(message, productId) {
+        super(message);
+        this.name = "StockError";
+        this.productId = productId;
+    }
 }
-
-
-
-// =======================
-// Carts
-// =======================
-
-export const StockError = new Error("Not enough stock");
 
 /**
  * Insert a cart entry into the database
@@ -295,7 +411,7 @@ export const insertCart = (cid, product_id, quantity) => {
 
         const newQuantity = alreadyInCart.quantity + quantity;
 
-        if (newQuantity > alreadyInCart.stock) throw StockError;
+        if (newQuantity > alreadyInCart.stock) throw new StockError('Not enough stock', product_id);
 
         return updateCartStmt.run({
             id: alreadyInCart.id,
@@ -430,7 +546,7 @@ export const updateCartEntry = (cid, id, quantity) => {
             getCartEntryStmt.get({ cid, id })
         );
 
-    if (cartEntry && quantity > cartEntry.stock) throw StockError;
+    if (cartEntry && quantity > cartEntry.stock) throw new StockError("Not enough stock", id);
 
     /** @type {!import('better-sqlite3').Statement<{ cid: string, id: number, quantity: number }>} */
     const updateCartEntryStmt = prepare(`
@@ -456,3 +572,148 @@ export const getCartTotal = (cid) => {
     return /** @type {{total: number}} */ (getCartTotalStmt.get(cid)).total;
 };
 
+/**
+ * 
+ * @param {string} cid id of user
+ * @returns {number} total entries
+ */
+export const getCartCount = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const getCartCountStmt = prepare(`
+        SELECT COUNT(*) AS total FROM carts
+        WHERE cid = ?
+    `);
+
+    return /** @type {{total: number}} */ (getCartCountStmt.get(cid)).total;
+}
+
+// #endregion Carts
+// =======================
+
+// =======================
+// #region Orders
+
+/**
+ * Turn a cart into an order
+ * @param {string} cid id of user
+ */
+export const cartToOrder = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<{oid: string, cid: string}>} */
+
+    // Get cart entries and also their product price
+    // Insert into orders table
+    // Delete cart entries
+    const cartToOrderStmt = prepare(`
+        INSERT INTO orders (oid, cid, product_id, quantity, price)
+        SELECT @oid, @cid, carts.product_id, carts.quantity, products.price FROM carts
+        INNER JOIN products ON carts.product_id = products.id
+        WHERE cid = @cid
+    `);
+
+    const trans = DB.transaction(() => {
+        // check if cart quantity is lesser than stock
+        /** @type {!import('better-sqlite3').Statement<string>} */
+        const checkCartStmt = prepare(`
+            SELECT carts.quantity, products.stock, products.id, products.price FROM carts
+            INNER JOIN products ON carts.product_id = products.id
+            WHERE cid = ?
+        `);
+
+        const cart =
+            /** @type {(Pick<Cart, 'quantity'> & Pick<Product, 'stock' | 'id' | 'price'>)[]} */ (
+                checkCartStmt.all(cid)
+            );
+
+        for (const { quantity, stock, id } of cart) {
+            if (quantity > stock) throw new StockError("Not enough stock", id);
+        }
+
+        const oid = uuidv4();
+        console.log(oid);
+
+        cartToOrderStmt.run({ oid: oid, cid });
+
+        /** @type {!import('better-sqlite3').Statement<{quantity: number, id: number}>}*/
+        const decrementStockStmt = prepare(`
+                UPDATE products SET stock = stock - @quantity WHERE id = @id
+            `);
+
+        for (const { quantity, id } of cart) {
+            // decrement stock by quantity
+            decrementStockStmt.run({ quantity, id });
+        }
+
+        deleteCart(cid);
+    });
+
+    trans();
+};
+
+/**
+ * Get order metrics
+ * gets how many of each product have been sold and its average price
+ * also get a sum of all the orders (price * quantity) for each order
+ */
+export const getOrderMetrics = () => {
+    /** @type {!import('better-sqlite3').Statement}*/
+    const getOrderMetricsStmt = prepare(`
+        SELECT products.name, products.description, SUM(orders.quantity) AS quantity, AVG(orders.price) AS price, SUM(orders.price * orders.quantity) AS total FROM orders
+        INNER JOIN products ON orders.product_id = products.id
+        GROUP BY orders.product_id
+    `);
+
+    return /** @type {{name: string, description: string, quantity: number, price: number, total: number}[]} */ (
+        getOrderMetricsStmt.all()
+    );
+}
+
+/**
+ * Get orders for a user
+ * @param {string} cid id of user
+ * @returns {string[]} order ids
+ */
+//get only unique order ids
+export const getOrdersForUser = (cid) => {
+    /** @type {!import('better-sqlite3').Statement<string>} */
+    const getOrdersStmt = prepare(`
+        SELECT DISTINCT oid FROM orders WHERE cid = ?
+    `);
+
+    return /** @type {string[]} */ (
+        /** @type {Pick<Order, 'oid'>[]} */ (getOrdersStmt.all(cid)).map(
+            (order) => order.oid,
+        )
+    );
+};
+
+/**
+ * Get order for a user
+ * @param {string} cid id of user
+ * @param {string} oid id of order
+ */
+export const getOrder = (cid, oid) => {
+    /** @type {!import('better-sqlite3').Statement<{cid: string, oid: string}>}*/
+    const getOrderStmt = prepare(`
+        SELECT orders.*, products.name, products.description FROM orders
+        INNER JOIN products ON orders.product_id = products.id
+        WHERE cid = @cid AND oid = @oid
+    `);
+
+    // return /** @type {(Order & Pick<Product, 'name' | 'stock'>)[]} */ (
+    //     /** @type {Pick<Order, 'oid'>[]} */ (getOrderStmt.all(cid)).map(
+    //         (order) => order.oid,
+    //     )
+    // );
+
+    const orderEntries =
+        /** @type {(Order & Pick<Product, 'name' | 'description'>)[]} */ (
+            getOrderStmt.all({ cid, oid })
+        );
+
+    return orderEntries.map((order) => ({
+        name: order.name,
+        description: order.description,
+        quantity: order.quantity,
+        price: order.price,
+    }));
+};

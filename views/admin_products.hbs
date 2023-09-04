@@ -1,35 +1,63 @@
 <div class="body">
+    {{! Ugly and temporary :DD }}
+    <div>
+        <td>
+            <input name="new-name" type="text" value="Name"/>
+        </td>
+        <td>
+            <input name="new-desc" type="text" value="Description" />
+        </td>
+        <td>
+            <input name="new-category" type="text" value="Category" />
+        </td>
+        <td>
+            <input name="new-price" type="number" value={{10}} />
+        </td>
+        <td>
+            <input name="new-stock" min="0" type="number" value={{10}} />
+        </td>
+        <td>
+            <button  hx-include="[name='new-name'], [name='new-desc'], [name='new-price'], [name='new-stock'], [name='new-category']" hx-post="/admin/add_product">Send</button> 
+        </td>
+    </div>
     <table class="users-table">
         <thead>
             <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price (₽)</th>
-            <th>Stock</th>
-        </tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Price (₽)</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
             {{#each products}}
-                <tr>
-                    <td>
-                        {{this.id}}
-                    </td>
-                    <td>
-                        {{this.name}}
-                    </td>
-                    <td>
-                        {{this.description}}
-                    </td>
-                    <td>
-                        <input type="number" value={{this.price}} />
-                    </td>
-                    
-                    <td>
-                        <input min="0" type="number" value={{this.stock}} />
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <p>{{this.id}}</p>
+                        </td>
+                        <td>
+                            <input name="name-{{this.id}}" type="text" value="{{this.name}}"/>
+                        </td>
+                        <td>
+                            <input name="desc-{{this.id}}" type="text" value="{{this.description}}" />
+                        </td>
+                        <td>
+                            <input name="category-{{this.id}}" type="text" value="{{this.category}}" />
+                        </td>
+                        <td>
+                            <input name="price-{{this.id}}" type="number" value={{this.price}} />
+                        </td>
+                        <td>
+                            <input name="stock-{{this.id}}" min="0" type="number" value={{this.stock}} />
+                        </td>
+                        <td>
+                            <button  hx-include="[name='name-{{this.id}}'], [name='desc-{{this.id}}'], [name='price-{{this.id}}'], [name='stock-{{this.id}}'], [name='category-{{this.id}}']" hx-post="/admin/update_product/{{this.id}}">Send</button> 
+                        </td>
+                    </tr>
             {{/each}}
-        </div>
-    </tbody>
+        </tbody>
+    </table>
 </div>

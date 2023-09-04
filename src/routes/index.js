@@ -8,19 +8,29 @@ import {
     getCart,
     getCartEntryWithProduct,
     getCartTotal,
+    getCartCount,
     getCartWithProducts,
     getProduct,
     getSecureUser,
     getUser,
+    getUserCount,
     getUserByUsername,
+    getOrderMetrics,
     insertCart,
     insertUser,
     updateCartEntry,
+    cartToOrder,
     DB,
     prepare,
+    searchProducts,
+    filterProducts,
+    getOrder,
 } from "../database.js";
 import { hashMD5 } from "../lib/md5.js";
 import { adminRouter } from "./admin.js";
+import { createCanvas } from "@napi-rs/canvas";
+import PDFDocument from "pdfkit-table";
+import { readFile } from "fs/promises";
 
 export const router = Router();
 
@@ -161,14 +171,32 @@ router.get("/contact", (req, res) => {
     });
 });
 
-router.get("/products", (req, res) => {
+/** @type {{[key: string]: string}} */
+const sortByTable = {
+    'price-htl': "price DESC",
+    'price-lth': "price ASC",
+    quantity: "stock DESC",
+}
+router.route("/products").get((req, res) => {
     const products = getAllProducts();
 
     res.render("products", {
         ...req.templateData,
         products,
     });
-});
+}).post((req, res) => {
+    const search = req.body['search'];
+    const category = req.body['category'];
+    /** @type {string} */
+    const sort = req.body['sort'];
+    
+    const products = filterProducts(category, search, sortByTable[sort]);
+
+    res.render("products", {
+        ...req.templateData,
+        products,
+    });
+})
 
 router
     .route("/products/:id")
@@ -197,19 +225,20 @@ router
         try {
             insertCart(req.cid, Number(id), 1);
         } catch (error) {
-            if (error === StockError) {
-                return res.setHeader(
-                    "HX-Trigger",
-                    JSON.stringify({
-                        toast: {
-                            msg: `Not enough ${item?.name} in stock`,
-                            color: "red",
-                        },
-                    }),
-                ).send();
+            if (error instanceof StockError) {
+                return res
+                    .setHeader(
+                        "HX-Trigger",
+                        JSON.stringify({
+                            toast: {
+                                msg: `Not enough ${item?.name} in stock`,
+                                color: "red",
+                            },
+                        }),
+                    )
+                    .send();
             }
         }
-        
 
         res.setHeader(
             "HX-Trigger",
@@ -222,7 +251,8 @@ router
         ).send();
     });
 
-router.get("/cart", (req, res) => {
+router
+    .route("/cart").get((req, res) => {
     if (!req.cid) {
         return res.render("cart", {
             ...req.templateData,
@@ -241,95 +271,113 @@ router.get("/cart", (req, res) => {
         total: items.reduce((acc, curr) => acc + curr.price * curr.quantity, 0),
         isEmpty: items.length === 0,
     });
+}).post((req, res) => {
+    if(!req.cid)
+        res.setHeader('HX-Location', '/cart').send();
+        
+    cartToOrder(req.cid);
 });
 
-router.route("/cart/:id").post((req, res) => {
-    if (!req.cid) {
-        return res.redirect("/login?redirect=/cart");
-    }
-
-    const { id } = req.params;
-
-    const item = getProduct(Number(id));
-
-    if (!item) {
-    }
-}).delete((req, res) => {
-    if (!req.cid) {
-        return res.redirect("/login?redirect=/cart");
-    }
-
-    const { id } = req.params;
-
-    deleteCartEntry(req.cid, Number(id));
-
-    const items = getCartWithProducts(req.cid);
-
-    res.setHeader('HX-Location', '/cart').send();
-})
-.patch((req, res) => {
-    if (!req.cid) {
-        return res.redirect("/login?redirect=/cart");
-    }
-
-    const { id } = req.params;
-
-    const { quantity } = req.body;
-
-    if (quantity <=0) {
-        deleteCartEntry(req.cid, Number(id));
-
-        return res.setHeader('HX-Location', '/cart').send();
-    }
-
-    try {
-        updateCartEntry(req.cid, Number(id), Number(quantity));
-    } catch (error) {
-        if (error === StockError) {
-            const item = getCartEntryWithProduct(req.cid, Number(id));
-        
-            const total = getCartTotal(req.cid);
-
-            return res.setHeader(
-                "HX-Trigger",
-                JSON.stringify({
-                    toast: {
-                        msg: `Not enough ${item?.name} in stock`,
-                        color: "red",
-                    },
-                }),
-            ).render("minis/cart_count_change", {
-                ...req.templateData,
-                item,
-                total,
-                layout: false,
-            });
+router
+    .route("/cart/:id")
+    .post((req, res) => {
+        if (!req.cid) {
+            return res.redirect("/login?redirect=/cart");
         }
 
-        console.log({error})
-    }
+        const { id } = req.params;
 
-    const item = getCartEntryWithProduct(req.cid, Number(id));
+        const item = getProduct(Number(id));
 
-    const total = getCartTotal(req.cid);
+        if (!item) {
+        }
+    })
+    .delete((req, res) => {
+        if (!req.cid) {
+            return res.redirect("/login?redirect=/cart");
+        }
 
-    res.setHeader(
-        'HX-Trigger',
-        JSON.stringify({
-            toast: {
-                msg: `Updated ${item?.name} quantity`,
-                color: "green",
-            },
-        }),
-    )
+        const { id } = req.params;
 
-    res.render("minis/cart_count_change", {
-        ...req.templateData,
-        item,
-        total,
-        layout: false,
+        deleteCartEntry(req.cid, Number(id));
+
+        const items = getCartWithProducts(req.cid);
+
+        res.setHeader("HX-Location", "/cart").send();
+    })
+    .patch((req, res) => {
+        if (!req.cid) {
+            return res.redirect("/login?redirect=/cart");
+        }
+
+        const { id } = req.params;
+
+        const { quantity } = req.body;
+
+        if (quantity <= 0) {
+            deleteCartEntry(req.cid, Number(id));
+
+            return res.setHeader("HX-Location", "/cart").send();
+        }
+
+        try {
+            updateCartEntry(req.cid, Number(id), Number(quantity));
+        } catch (error) {
+            if (error instanceof StockError) {
+                const item = getCartEntryWithProduct(req.cid, Number(id));
+
+                const total = getCartTotal(req.cid);
+
+                return res
+                    .setHeader(
+                        "HX-Trigger",
+                        JSON.stringify({
+                            toast: {
+                                msg: `Not enough ${item?.name} in stock`,
+                                color: "red",
+                            },
+                        }),
+                    )
+                    .render("minis/cart_count_change", {
+                        ...req.templateData,
+                        item,
+                        total,
+                        layout: false,
+                    });
+            }
+
+            console.log({ error });
+        }
+
+        const item = getCartEntryWithProduct(req.cid, Number(id));
+
+        const total = getCartTotal(req.cid);
+
+        res.setHeader(
+            "HX-Trigger",
+            JSON.stringify({
+                toast: {
+                    msg: `Updated ${item?.name} quantity`,
+                    color: "green",
+                },
+            }),
+        );
+
+        res.render("minis/cart_count_change", {
+            ...req.templateData,
+            item,
+            total,
+            layout: false,
+        });
     });
+
+router.get("/cart-count", (req,res) => {
+    if(!req.cid)
+        return res.setHeader('HX-Location', '/cart').send();
+
+    return getCartCount(req.cid);
 })
+
 
 // =======================
 // Account
@@ -463,13 +511,13 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/fill-db", (req, res) => {
-
     const insertStmt = prepare(
-        `INSERT INTO products (id, name, price, stock, description) VALUES (@id, @name, @price, @stock, @description) ON CONFLICT DO UPDATE SET
+        `INSERT INTO products (id, name, price, stock, description) VALUES (@id, @name, @price, @stock, @description, @category) ON CONFLICT DO UPDATE SET
         name = @name,
         price = @price,
         stock = @stock,
-        description = @description;`,
+        description = @description,
+        category = @category;`,
     );
 
     const products = [
@@ -478,84 +526,246 @@ router.get("/fill-db", (req, res) => {
             price: 10,
             stock: 1,
             description: "En gul böjig frukt",
+            category: "Frukt",
         },
         {
             name: "Äpple",
-            price: 15,
+            price: 20,
             stock: 10,
             description: "En röd frukt",
+            category: "Frukt",
         },
         {
             name: "Apelsin",
             price: 7,
             stock: 1,
             description: "En orange frukt",
+            category: "Citrus",
         },
         {
             name: "Päron",
             price: 8,
             stock: 1,
             description: "En grön frukt",
+            category: "Frukt",
         },
         {
             name: "Kiwi",
             price: 9,
             stock: 1,
             description: "En brun frukt",
+            category: "Frukt",
         },
         {
             name: "Vattenmelon",
             price: 15,
             stock: 1,
             description: "En stor frukt",
+            category: "Frukt",
         },
         {
             name: "Citron",
             price: 2,
             stock: 1,
             description: "En gul frukt",
+            category: "Citrus",
         },
         {
             name: "Avocado",
             price: 20,
             stock: 1,
             description: "En fet frukt",
+            category: "Vegetable",
         },
         {
             name: "Ananas",
             price: 15,
             stock: 1,
             description: "En tropisk frukt",
+            category: "Frukt",
         },
         {
             name: "Squash",
             price: 200,
             stock: 1,
             description: "En smashy frukt",
+            category: "Vegetable",
         },
         {
             name: "Grape",
             price: 20,
             stock: 1,
             description: "En grupp frukt",
+            category: "Frukt",
         },
         {
             name: "Blueberry",
             price: 15,
             stock: 1,
             description: "En blå frukt",
+            category: "Frukt",
         },
     ];
 
-    products.forEach((product, idx) => insertStmt.run({...product, id: idx + 1}));
+    products.forEach((product, idx) =>
+        insertStmt.run({ ...product, id: idx + 1 }),
+    );
 
     res.send("ok");
-
 });
+
+router.get("/order/:id", async (req, res) => {
+    if(!req.cid)
+        return res.redirect("/");
+
+    const products = getOrder(req.cid, req.params.id);
+    let netTotal = 0;
+    let quantityTotal = 0;
+    products.map((p) => {
+        netTotal += p.price;
+        quantityTotal += p.quantity;
+    });
+    const taxTotal = netTotal * 0.32;
+    const shippingTotal = quantityTotal * 13.37;
+
+    /**
+     * @param spaceFromEdge - how far the right and left sides should be away from the edge (in px)
+     * @param linesAboveAndBelow - how much space should be above and below the HR (in lines)
+     */
+    const addHorizontalRule = (spaceFromEdge = 0, linesAboveAndBelow = 0.5) =>{
+        doc.moveDown(linesAboveAndBelow);
+    
+        doc.moveTo(0 + spaceFromEdge, doc.y)
+        .lineTo(doc.page.width - spaceFromEdge, doc.y)
+        .stroke();
+    
+        doc.moveDown(linesAboveAndBelow);
+        
+        return doc
+    }
+
+    const doc = new PDFDocument({
+        info: {
+            Title: "Receipt for order A43B454CF43", // Replace with actual order ID
+            Subject: "Receipt",
+            Author: "James Charles",
+        },
+        autoFirstPage: false,
+    })
+    doc.pipe(res)
+
+    // const logo = await readFile("public/reality.jpeg");
+    
+    doc.on("pageAdded", () => {
+        doc.image('public/logo.png', 400, undefined, {fit: [150, 200]}, )
+        doc.moveDown()
+    })
+    doc.addPage();
+
+
+    //doc.logo.svg");
+
+    doc.text("Order Details");
+
+    addHorizontalRule(20, 1);
+
+    /* Section - General Information */
+    {
+        // NOTE: Replace with actual data
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Order date", {continued: true})
+        .font("Helvetica")
+        .text("2023/09/03 10:35pm", {align: "right"});
+
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Payment method", {continued: true})
+        .font("Helvetica")
+        .text("Credit Card", {align: "right"});
+ 
+        doc.moveDown(1);
+
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Net total", {continued: true})
+        .font("Helvetica")
+        .text(`$${netTotal}`, {align: "right"});
+
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Sub total");
+
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Shipping", {continued: true})
+        .font("Helvetica")
+        .text(`$${shippingTotal}`, {align: "right"});
+
+        doc.font("Helvetica")
+        .fontSize(10)
+        .text("Taxes", {continued: true})
+        .font("Helvetica")
+        .text(`$${taxTotal}`, {align: "right"});
+
+        addHorizontalRule(72, 1);
+
+        doc.font("Helvetica-Bold")
+        .fontSize(10)
+        .text("Total", {continued: true})
+        .font("Helvetica-Bold")
+        .text(`$${netTotal + shippingTotal + taxTotal}`, {align: "right"});
+    }
+    /* Section End - General information */
+
+    addHorizontalRule(20, 1);
+
+    doc.table({
+        headers: ["Name", "Price", "Stock", "Description"],
+        rows: products.map((product) => [
+            product.name,
+            product.price.toString(),
+            product.quantity.toString(),
+            product.description,
+        ]),
+    })
+
+    doc.end()
+});
+
+router.get("/user_count", (req, res) => {
+    const r = getUserCount();
+    
+    res.send(`<div>${r.user_count}</div>`);
+})
+
+
+/* "Hopefully" Counts how many sold products */
+router.get("/quantity_count", (req, res) => {
+    const q = getOrderMetrics();
+    let qu = ''
+    
+    q.forEach((metric) => {
+        qu += `<p>Quantity : ${metric.quantity}</p>`
+    })
+    res.send(qu);
+})
+
+/* "Hopefully" Counts how much money made from sold products*/
+router.get("/loot_amount", (req, res) => {
+    const l = getOrderMetrics();
+    let la = ''
+
+    l.forEach((metric) => {
+        la += `<p> Loot : ${metric.price}</p>`
+    })
+    res.send(la);
+})
+
 
 // We do be injecting doe
 router.get("*", (req, res) => {
-    res.status(404).render('layouts/main', {
+    res.status(404).render("layouts/main", {
         body: `
         <h1>404</h1>
         <p>Page not found</p>
@@ -585,5 +795,5 @@ router.get("*", (req, res) => {
             }
         </style>`,
         layout: false,
-    })
+    });
 });

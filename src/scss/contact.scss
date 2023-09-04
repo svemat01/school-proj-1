@@ -17,8 +17,18 @@
         justify-content: center;
         gap: base.$common-gap;
         margin-inline: auto;
+
+        @media screen and (max-width: base.$tablet-width) {
+            display: flex;
+            flex-direction: column;
+            
+            width: calc(100% - 60px);
+            margin-inline: auto;
+        }
+
         .contact-form {
             @include base.custom-box-shadow;
+
             width: 65%;
             height: 100%;
 
@@ -28,6 +38,10 @@
             flex-direction: column;
             gap: base.$common-gap;
             background-color: base.$dark-blue;
+
+            @media screen and (max-width: base.$tablet-width) {
+                width: 100%;
+            }
 
             div {
                 width: 100%;
@@ -82,6 +96,7 @@
                     flex: 1;
                     width: 100%;
                     border: none;
+                    max-height: 600px;
 
                     &:focus {
                         outline: 2px solid base.$text-color-2;
@@ -101,6 +116,8 @@
                 color: base.$text-color;
                 border: none;
                 transition: base.$custom-transition-time;
+                border-radius: 4px;
+                max-height: 80px;
 
                 &:hover {
                     cursor: pointer;
@@ -108,7 +125,7 @@
                     transition: base.$custom-transition-time;
                 }
 
-                &:active{
+                &:active {
                     transform: base.$active-scale;
                     transition: 1ms;
                 }

@@ -3,13 +3,11 @@
 
 .intro {
     position: relative;
-    // height: 90dvh;
 
     display: flex;
     flex-direction: column;
-    // justify-content: center;
     align-items: center;
-    padding: 150px 0;
+    padding: 100px 0;
 
     .bg {
         position: absolute;
@@ -93,6 +91,7 @@
     .desc {
         padding: 15px;
         border-radius: base.$border-radius;
+        text-shadow: base.$text-shadow;
         text-align: center;
         font-size: 20px;
     }
@@ -129,12 +128,18 @@
         .content {
             grid-column: span 3;
             padding: 10px 20px;
+            text-shadow: base.$text-shadow;
+
 
             background-color: base.$dark-blue;
             border-radius: base.$border-radius;
 
             font-size: 20px;
             height: 100%;
+
+            .desc {
+                font-size: 18px;
+            }
         }
 
         .title {
@@ -165,6 +170,27 @@
             .content {
                 grid-row: 2;
             }
+        }
+    }
+}
+
+.about-container {
+    background-color: base.$text-color-3; // Change color
+    padding: 100px 0;
+    width: 100%;
+
+    .inner {
+        width: base.$common-width;
+        max-width: base.$common-max-width;
+        margin-inline: auto;
+
+        h3 {
+            font-size: 34px;
+            font-family: "Magra", sans-serif;
+        }
+
+        p {
+            width: 70%;
         }
     }
 }

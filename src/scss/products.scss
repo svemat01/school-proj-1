@@ -3,6 +3,7 @@
 
 main {
     position: relative;
+    
 }
 
 .bg {
@@ -33,6 +34,11 @@ main {
     margin-top: 100px;
     padding: 10px;
     @include base.custom-box-shadow;
+
+    @media screen and (max-width: base.$tablet-width) {
+        width: calc(100% - 60px);
+        margin-inline: auto;
+    }
 
     .searchfield {
         display: flex;
@@ -86,6 +92,11 @@ main {
     max-width: base.$common-max-width;
     margin-inline: auto;
     margin-bottom: 100px;
+
+    @media screen and (max-width: base.$tablet-width) {
+        width: calc(100% - 60px);
+        margin-inline: auto;
+    }
 
     .category {
         border-radius: base.$border-radius;
@@ -147,7 +158,7 @@ main {
 
             img {
                 transition: transform 0.4s ease 0s;
-                transform: scale(1.1);
+                transform: scale(1.0);
                 z-index: -1;
                 margin: auto;
                 display: block;

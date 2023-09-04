@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllSecureUsers, deleteUser, promoteUser, demoteUser, getAllProducts } from '../database.js';
+import { getAllSecureUsers, deleteUser, promoteUser, demoteUser, getAllProducts, updateProduct, insertProduct } from '../database.js';
 
 export const adminRouter = Router();
 
@@ -23,10 +23,11 @@ adminRouter.use((req, res, next) => {
 
 adminRouter.get('/', (req, res) => {
     const users = getAllSecureUsers();
-    const adminUsers = users.filter((user)=> user.admin === 1)
+
+
     res.render('admin_home', {
         ...req.templateData,
-        adminUsers,
+        users,
     })
 })
 
@@ -76,4 +77,37 @@ adminRouter.get('/products', (req, res) => {
         ...req.templateData,
         products,
     })
+})
+
+adminRouter.post("/update_product/:id", (req, res) => {
+    //res.setHeader("HX-Location", "/admin/products").send();
+    console.log(req.body);
+
+    const { id } = req.params;
+    const 
+        name = req.body[`name-${id}`], 
+        stock = req.body[`stock-${id}`],
+        price = req.body[`price-${id}`],
+        description = req.body[`desc-${id}`],
+        category = req.body[`category-${id}`];
+    updateProduct(id, name, stock, price, description, category);
+
+    
+    res.setHeader("HX-Location", "/admin/products").send();
+
+    res.setHeader("HX-Location", "/admin/products").send();
+})
+
+adminRouter.post("/add_product", (req, res) => {
+    console.log(req.body)
+
+    const name = req.body["new-name"],
+        description = req.body["new-desc"],
+        category = req.body["new-category"],
+        price = req.body["new-price"],
+        stock = req.body["new-stock"];
+
+    insertProduct(name, stock, price, description, category);
+
+    res.setHeader("HX-Location", "/admin/products").send();
 })

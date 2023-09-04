@@ -15,10 +15,10 @@
                         <p>{{this.username}}</p>
                         <div class="buttons">
                             {{#if this.admin}}
-                            <button class="demButton" hx-post="/admin/demote_users/{{this.id}}"> Demote </button>
+                            <button class="demButton" hx-post="/admin/demote_users/{{this.id}}">Demote</button>
                             {{/if}}
-                            <button class="admButton" hx-post="/admin/promote_user/{{this.id}}"> Promote </button>
-                            <button class="delButton" hx-delete="/admin/delete_user/{{this.id}}"> Delete </button>
+                            <button class="admButton" hx-post="/admin/promote_user/{{this.id}}">Promote</button>
+                            <button class="delButton" hx-delete="/admin/delete_user/{{this.id}}">Delete</button>
                         </div>
                     </li>
                     {{/each}}

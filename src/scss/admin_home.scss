@@ -1,6 +1,10 @@
 @use "base";
 @use "admin";
 
+main {
+    height: 100%;
+}
+
 .body {
     width: 100%;
     height: 100%;
@@ -18,12 +22,12 @@
         background: #6c757d;
         box-shadow: base.$box-shadow;
 
-        text-align: center;
 
         #title {
             background-color: #3e92cc;
             padding: 2px;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         .content {
@@ -31,16 +35,20 @@
             grid: repeat(1, 1fr);
             row-gap: 50px;
 
-            .income {
-                #sum {
-                    background-color: #3e92cc;
-                    font-size: 20px;
-                    width: 90%;
-                    height: 25px;
+            .undertitle{
+                display: flex;                    
+                width: 100%;
+                margin-left:15px;
+            }
+            .sum {
+                background-color: #3e92cc;
+                font-size: 20px;
+                width: 90%;
+                height: 25px;
 
-                    margin-inline: auto;
-                    overflow: hidden;
-                }
+                margin-inline: auto;
+                overflow: hidden;
+                text-indent: 15px;
             }
 
             .lager {
@@ -79,6 +87,12 @@
                 }
             }
         }
+    }
+    .logo{
+        width: 250px;
+        height: 75px;
+        margin: auto;
+        z-index: -1;
     }
     .settings {
         width: 25%;

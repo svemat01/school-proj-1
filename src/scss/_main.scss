@@ -3,7 +3,7 @@
 nav#navbar {
     background-color: base.$navy-blue;
     width: 100%;
-    // height: base.$navbar-height;
+    height: base.$navbar-height;
 
     .inner {
         width: base.$common-width;
@@ -124,9 +124,11 @@ footer#footer {
                     width: min-content;
                     gap: base.$common-gap;
 
-                    svg {
-                        path {
-                            fill: base.$text-color-3;
+                    a {
+                        svg {
+                            path {
+                                fill: base.$text-color-3;
+                            }
                         }
                     }
                 }
