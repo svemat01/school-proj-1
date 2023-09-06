@@ -1,5 +1,22 @@
 import { Router } from 'express';
+import { readdir } from 'fs';
+import { writeFile } from 'fs/promises';
+import multer from 'multer';
+import path from 'path';
 import { getAllSecureUsers, deleteUser, promoteUser, demoteUser, getAllProducts, updateProduct, insertProduct } from '../database.js';
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage,fileFilter: (req, file, cb) => {
+    if (file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+        cb(null, true);
+    } else {
+        cb(null, false);
+        return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    }
+} });
+
+// @ts-ignore
+const uploadDir = path.join(path.dirname(import.meta.url.substring(8)), '../../upload');
 
 export const adminRouter = Router();
 
@@ -90,15 +107,20 @@ adminRouter.post("/update_product/:id", (req, res) => {
         price = req.body[`price-${id}`],
         description = req.body[`desc-${id}`],
         category = req.body[`category-${id}`];
-    updateProduct(id, name, stock, price, description, category);
+    console.log(Number(id), name, stock, price, description, category);
+    updateProduct(Number(id), name, stock, price, description, category);
 
     
     res.setHeader("HX-Location", "/admin/products").send();
-
-    res.setHeader("HX-Location", "/admin/products").send();
 })
 
-adminRouter.post("/add_product", (req, res) => {
+
+adminRouter.post("/add_product", upload.single('image'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No image were uploaded.');
+    }
+
+    req.file.buffer
     console.log(req.body)
 
     const name = req.body["new-name"],
@@ -107,7 +129,9 @@ adminRouter.post("/add_product", (req, res) => {
         price = req.body["new-price"],
         stock = req.body["new-stock"];
 
-    insertProduct(name, stock, price, description, category);
+    const productId = insertProduct(name, stock, price, description, category);
+
+    await writeFile(`${uploadDir}/${productId}.jpg`, req.file.buffer);
 
     res.setHeader("HX-Location", "/admin/products").send();
 })

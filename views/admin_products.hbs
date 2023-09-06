@@ -1,6 +1,6 @@
 <div class="body">
     {{! Ugly and temporary :DD }}
-    <div>
+    <form hx-encoding='multipart/form-data' hx-post="/admin/add_product">
         <td>
             <input name="new-name" type="text" value="Name"/>
         </td>
@@ -17,9 +17,14 @@
             <input name="new-stock" min="0" type="number" value={{10}} />
         </td>
         <td>
-            <button  hx-include="[name='new-name'], [name='new-desc'], [name='new-price'], [name='new-stock'], [name='new-category']" hx-post="/admin/add_product">Send</button> 
+            <input type='file' name='image'>
         </td>
-    </div>
+        <td>
+            <button 
+            {{!-- hx-include="[name='new-name'], [name='new-desc'], [name='new-price'], [name='new-stock'], [name='new-category']" --}}
+            >Send</button> 
+        </td>
+    </form>
     <table class="users-table">
         <thead>
             <tr>

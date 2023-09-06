@@ -139,7 +139,8 @@ export const insertProduct = (name, stock, price, description, category) => {
         INSERT INTO products (name, stock, price, description, category) VALUES (@name, @stock, @price, @description, @category);
     `);
 
-    insertProductStmt.run({ name, stock, price, description, category });
+    const { lastInsertRowid } = insertProductStmt.run({ name, stock, price, description, category });
+    return lastInsertRowid;
 };
 /**
 * Update product into the database
@@ -176,7 +177,7 @@ export const getProduct = (id) => {
  * @param {number} offset number of products to skip
  * @returns {Product[]} products
  */
-export const getAllProducts = (limit = 25, offset = 0) => {
+export const getAllProducts = (limit = 250, offset = 0) => {
     /** @type {!import('better-sqlite3').Statement<{ limit: number, offset: number }>} */
     const getAllProductsStmt = prepare(`
         SELECT * FROM products LIMIT @limit OFFSET @offset 
@@ -191,7 +192,7 @@ export const getAllProducts = (limit = 25, offset = 0) => {
 * @param {number} limit number of products to get
 * @returns {Product[]} products
 */
-export const searchProducts = (search, limit = 25) => {
+export const searchProducts = (search, limit = 250) => {
     /** @type {!import('better-sqlite3').Statement<{ search: string, limit: number }>} */
     const searchProductsStmt = prepare(`
         SELECT * FROM products WHERE name LIKE '%' || @search || '%' LIMIT @limit
@@ -212,7 +213,7 @@ export const searchProducts = (search, limit = 25) => {
  * @param {number} [limit] number of products to get
  * @returns {Product[]} products
  */
-export const filterProducts = (category, search, sort, limit = 25) => {
+export const filterProducts = (category, search, sort, limit = 250) => {
     /** @type {!import('better-sqlite3').Statement<{ category?: string, search?: string, limit?: number }>} */
     const filterProductsStmt = prepare(`
         SELECT * FROM products 
@@ -596,6 +597,7 @@ export const getCartCount = (cid) => {
 /**
  * Turn a cart into an order
  * @param {string} cid id of user
+ * @return {string | null} oid on success, null on fail
  */
 export const cartToOrder = (cid) => {
     /** @type {!import('better-sqlite3').Statement<{oid: string, cid: string}>} */
@@ -609,6 +611,8 @@ export const cartToOrder = (cid) => {
         INNER JOIN products ON carts.product_id = products.id
         WHERE cid = @cid
     `);
+
+    let oid = null;
 
     const trans = DB.transaction(() => {
         // check if cart quantity is lesser than stock
@@ -628,7 +632,7 @@ export const cartToOrder = (cid) => {
             if (quantity > stock) throw new StockError("Not enough stock", id);
         }
 
-        const oid = uuidv4();
+        oid = uuidv4();
         console.log(oid);
 
         cartToOrderStmt.run({ oid: oid, cid });
@@ -647,6 +651,8 @@ export const cartToOrder = (cid) => {
     });
 
     trans();
+
+    return oid;
 };
 
 /**

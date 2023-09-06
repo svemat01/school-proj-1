@@ -275,7 +275,10 @@ router
     if(!req.cid)
         res.setHeader('HX-Location', '/cart').send();
         
-    cartToOrder(req.cid);
+    const oid = cartToOrder(req.cid);
+
+    if (oid !== null)
+        res.setHeader('HX-Location', `/order/${oid}.pdf`).send();
 });
 
 router
@@ -614,11 +617,17 @@ router.get("/fill-db", (req, res) => {
     res.send("ok");
 });
 
-router.get("/order/:id", async (req, res) => {
+router.get("/order/:oid", async (req, res) => {
     if(!req.cid)
         return res.redirect("/");
 
-    const products = getOrder(req.cid, req.params.id);
+    const oid = req.params.oid.replace(/\.pdf$/, '');
+
+    const products = getOrder(req.cid, oid);
+
+    if(products.length === 0)
+        return res.redirect("/");
+
     let netTotal = 0;
     let quantityTotal = 0;
     products.map((p) => {
@@ -644,17 +653,19 @@ router.get("/order/:id", async (req, res) => {
         return doc
     }
 
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="order.pdf"'); 
+
     const doc = new PDFDocument({
         info: {
-            Title: "Receipt for order A43B454CF43", // Replace with actual order ID
-            Subject: "Receipt",
-            Author: "James Charles",
+            Title: `Receipt for order ${oid}`,
+            Subject: "Order Receipt",
+            Author: "Deep Sea NFT INC",
         },
         autoFirstPage: false,
     })
     doc.pipe(res)
 
-    // const logo = await readFile("public/reality.jpeg");
     
     doc.on("pageAdded", () => {
         doc.image('public/logo.png', 400, undefined, {fit: [150, 200]}, )
@@ -663,7 +674,6 @@ router.get("/order/:id", async (req, res) => {
     doc.addPage();
 
 
-    //doc.logo.svg");
 
     doc.text("Order Details");
 
@@ -671,7 +681,6 @@ router.get("/order/:id", async (req, res) => {
 
     /* Section - General Information */
     {
-        // NOTE: Replace with actual data
         doc.font("Helvetica")
         .fontSize(10)
         .text("Order date", {continued: true})
